@@ -36,9 +36,7 @@ import {
   MessageCircle,
   Smartphone,
   CheckCircle2,
-  AlertCircle,
-  Download,
-  FileCode
+  AlertCircle
 } from 'lucide-react';
 
 interface StorySlide {
@@ -223,51 +221,6 @@ export default function App() {
   // Video State
   const [isVideoPlaying, setIsVideoPlaying] = useState(false);
 
-  // Download Modal State
-  const [isDownloadModalOpen, setIsDownloadModalOpen] = useState(false);
-  const [isCopiedHtml, setIsCopiedHtml] = useState(false);
-  const [downloadingFormat, setDownloadingFormat] = useState<string | null>(null);
-
-  const handleMobileDownload = async (fileUrl: string, fileName: string, formatId: string) => {
-    try {
-      setDownloadingFormat(formatId);
-      const res = await fetch(fileUrl);
-      if (!res.ok) throw new Error('Network error');
-      const blob = await res.blob();
-      const blobUrl = window.URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.style.display = 'none';
-      a.href = blobUrl;
-      a.download = fileName;
-      document.body.appendChild(a);
-      a.click();
-      setTimeout(() => {
-        window.URL.revokeObjectURL(blobUrl);
-        document.body.removeChild(a);
-        setDownloadingFormat(null);
-      }, 2000);
-    } catch {
-      window.location.href = fileUrl;
-      setDownloadingFormat(null);
-    }
-  };
-
-  const handleCopyHtmlCode = async () => {
-    try {
-      setDownloadingFormat('copy');
-      const res = await fetch('/littlemindz-react-singlefile.html');
-      const text = await res.text();
-      await navigator.clipboard.writeText(text);
-      setIsCopiedHtml(true);
-      setDownloadingFormat(null);
-      setTimeout(() => setIsCopiedHtml(false), 4000);
-    } catch {
-      // Fallback if clipboard permission denied
-      alert('Unable to copy automatically. Please use the direct download button.');
-      setDownloadingFormat(null);
-    }
-  };
-
   // Order & Configurator State
   const [selectedPackageId, setSelectedPackageId] = useState<string>('pdf-combo');
   const [childName, setChildName] = useState('');
@@ -445,16 +398,6 @@ export default function App() {
           </div>
 
           <div className="flex items-center gap-2">
-            <button
-              onClick={() => setIsDownloadModalOpen(true)}
-              className="neo-btn bg-white text-[#24252b] px-3 py-1.5 text-xs font-black flex items-center gap-1.5 hover:bg-yellow-200"
-              title="Download HTML file"
-            >
-              <Download className="w-4 h-4 text-[#286dd7]" />
-              <span className="hidden sm:inline">Download HTML</span>
-              <span className="sm:hidden">HTML</span>
-            </button>
-
             <a
               href="https://wa.me/918527166662"
               target="_blank"
@@ -1319,166 +1262,6 @@ export default function App() {
           </div>
         </div>
       </section>
-
-      {/* Download Upgraded HTML Website Section */}
-      <section className="py-10 px-4 border-b-2 border-[#24252b] bg-[#c9e7ca]">
-        <div className="max-w-4xl mx-auto neo-box bg-white p-6 sm:p-8 text-center">
-          <span className="inline-flex items-center gap-1.5 text-xs font-black uppercase tracking-wider bg-[#24252b] text-white px-3 py-1 rounded-full mb-3">
-            <Download className="w-3.5 h-3.5 text-yellow-400" />
-            <span>Download Source Code</span>
-          </span>
-          <h2 className="text-2xl sm:text-3xl font-black text-[#24252b]">
-            Get the Upgraded Mobile HTML
-          </h2>
-          <p className="text-sm sm:text-base font-bold text-slate-700 max-w-xl mx-auto mt-2 mb-6">
-            Download the complete, self-contained single-file HTML with the touch carousel, sample video player, Indian pricing bundles, and WhatsApp order generator.
-          </p>
-
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
-            <a
-              href="/littlemindz-netlify-deploy.zip"
-              download="littlemindz-netlify-deploy.zip"
-              className="neo-btn bg-[#286dd7] text-white py-3 px-6 text-sm font-black flex items-center justify-center gap-2 w-full sm:w-auto shadow-[4px_4px_0_#24252b] hover:bg-[#1b53a8]"
-            >
-              <Download className="w-4 h-4" />
-              <span>Download Netlify Deploy ZIP (Exact Preview)</span>
-            </a>
-
-            <a
-              href="/littlemindz-react-singlefile.html"
-              download="littlemindz-standalone.html"
-              className="neo-btn bg-[#f9d54a] text-[#24252b] py-3 px-5 text-sm font-black flex items-center justify-center gap-2 w-full sm:w-auto"
-            >
-              <FileCode className="w-4 h-4 text-emerald-800" />
-              <span>Download Single-File HTML</span>
-            </a>
-
-            <a
-              href="/littlemindz-react-singlefile.html"
-              target="_blank"
-              rel="noreferrer"
-              className="neo-btn bg-white text-[#24252b] py-3 px-4 text-sm font-black flex items-center justify-center gap-1.5 w-full sm:w-auto"
-            >
-              <ExternalLink className="w-4 h-4" />
-              <span>Preview in New Tab</span>
-            </a>
-          </div>
-        </div>
-      </section>
-
-      {/* Download Modal */}
-      {isDownloadModalOpen && (
-        <div className="fixed inset-0 z-50 bg-black/75 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="relative max-w-lg w-full neo-box bg-white p-6 rounded-xl shadow-[8px_8px_0_#24252b]">
-            <button
-              onClick={() => setIsDownloadModalOpen(false)}
-              className="absolute top-4 right-4 p-1.5 rounded-full hover:bg-slate-100 text-[#24252b] border border-slate-300"
-            >
-              <X className="w-5 h-5" />
-            </button>
-
-            <div className="flex items-center gap-3 mb-4">
-              <div className="w-10 h-10 rounded-full bg-[#f9d54a] border-2 border-[#24252b] flex items-center justify-center">
-                <Download className="w-5 h-5 text-[#24252b]" />
-              </div>
-              <div>
-                <h3 className="text-xl font-black text-[#24252b]">Download Upgraded HTML</h3>
-                <span className="text-xs font-bold text-slate-600">Choose your preferred download format</span>
-              </div>
-            </div>
-
-            <div className="space-y-3 mt-4">
-              {/* Copy HTML Button (Best for Mobile) */}
-              <button
-                type="button"
-                onClick={handleCopyHtmlCode}
-                disabled={downloadingFormat === 'copy'}
-                className="w-full p-4 rounded-lg border-2 border-emerald-500 bg-emerald-50 hover:bg-emerald-100 transition-colors text-left flex items-start justify-between cursor-pointer"
-              >
-                <div>
-                  <strong className="text-sm font-black text-emerald-950 flex items-center gap-2">
-                    <Sparkles className="w-4 h-4 text-emerald-600" />
-                    <span>Copy Full HTML to Clipboard</span>
-                    <span className="text-[10px] bg-emerald-700 text-white px-2 py-0.5 rounded">EASIEST ON MOBILE</span>
-                  </strong>
-                  <p className="text-xs font-semibold text-emerald-800 mt-1">
-                    {isCopiedHtml
-                      ? '✅ COPIED! The complete HTML code is on your clipboard. Paste it directly into any file or hosting editor.'
-                      : 'One tap copies the entire upgraded HTML code directly. No downloading or unzipping required on mobile!'}
-                  </p>
-                </div>
-                <div className="shrink-0 ml-2">
-                  <span className="neo-btn bg-emerald-600 text-white text-[11px] font-black py-1.5 px-3 rounded shadow-sm">
-                    {downloadingFormat === 'copy' ? 'Copying...' : isCopiedHtml ? 'Copied!' : 'Copy Code'}
-                  </span>
-                </div>
-              </button>
-
-              {/* Netlify ZIP (Blob Download) */}
-              <button
-                type="button"
-                onClick={() => handleMobileDownload('/littlemindz-netlify-deploy.zip', 'littlemindz-netlify-deploy.zip', 'zip')}
-                disabled={downloadingFormat === 'zip'}
-                className="w-full p-4 rounded-lg border-2 border-[#286dd7] bg-blue-50 hover:bg-blue-100 transition-colors text-left flex items-start justify-between cursor-pointer"
-              >
-                <div>
-                  <strong className="text-sm font-black text-[#24252b] flex items-center gap-2">
-                    <Download className="w-4 h-4 text-[#286dd7]" />
-                    <span>1. Netlify Production ZIP (Exact Preview)</span>
-                    <span className="text-[10px] bg-[#286dd7] text-white px-2 py-0.5 rounded">RECOMMENDED</span>
-                  </strong>
-                  <p className="text-xs font-semibold text-slate-700 mt-1">
-                    Complete compiled production app (<code className="font-bold">index.html</code>, <code className="font-bold">assets/</code>, <code className="font-bold">_redirects</code>).
-                  </p>
-                  <span className="text-[11px] font-bold text-[#286dd7] block mt-1">
-                    {downloadingFormat === 'zip' ? 'Preparing download...' : 'File size: ~8.9 MB · Tap to Download'}
-                  </span>
-                </div>
-                <div className="shrink-0 ml-2">
-                  <span className="neo-btn bg-[#286dd7] text-white text-[11px] font-black py-1.5 px-3 rounded shadow-sm">
-                    {downloadingFormat === 'zip' ? 'Downloading...' : 'Download ZIP'}
-                  </span>
-                </div>
-              </button>
-
-              {/* Single File HTML (Blob Download) */}
-              <button
-                type="button"
-                onClick={() => handleMobileDownload('/littlemindz-react-singlefile.html', 'index.html', 'html')}
-                disabled={downloadingFormat === 'html'}
-                className="w-full p-4 rounded-lg border-2 border-[#24252b] bg-[#f8f4e9] hover:bg-[#fff1b4] transition-colors text-left flex items-start justify-between cursor-pointer"
-              >
-                <div>
-                  <strong className="text-sm font-black text-[#24252b] flex items-center gap-2">
-                    <FileCode className="w-4 h-4 text-amber-700" />
-                    <span>2. Single-File HTML (Named index.html)</span>
-                  </strong>
-                  <p className="text-xs font-semibold text-slate-700 mt-1">
-                    All components, styles, and storybook illustrations self-contained in one file. Ready to upload directly to any hosting provider.
-                  </p>
-                  <span className="text-[11px] font-bold text-amber-800 block mt-1">
-                    {downloadingFormat === 'html' ? 'Preparing file...' : 'Single File (6.4 MB) · Tap to Download'}
-                  </span>
-                </div>
-                <div className="shrink-0 ml-2">
-                  <span className="neo-btn bg-[#f9d54a] text-[#24252b] text-[11px] font-black py-1.5 px-3 rounded shadow-sm">
-                    {downloadingFormat === 'html' ? 'Downloading...' : 'Download HTML'}
-                  </span>
-                </div>
-              </button>
-            </div>
-
-            <div className="mt-5 pt-3 border-t border-slate-200 flex justify-end">
-              <button
-                onClick={() => setIsDownloadModalOpen(false)}
-                className="neo-btn bg-slate-100 text-[#24252b] px-4 py-2 text-xs font-black"
-              >
-                Close
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
 
       {/* Footer */}
       <footer className="bg-[#24252b] text-[#fffdf7] py-10 px-4">

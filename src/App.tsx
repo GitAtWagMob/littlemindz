@@ -118,7 +118,7 @@ const PACKAGES: PackageOption[] = [
     price: 199,
     originalPrice: 299,
     deliverable: '1 High-Resolution Digital Book PDF',
-    deliveryTime: '24–48 Hours on WhatsApp',
+    deliveryTime: '1–2 Days on WhatsApp',
     features: [
       'Child’s name, age & gender integrated',
       'Targeted for 1 specific habit or milestone',
@@ -135,7 +135,7 @@ const PACKAGES: PackageOption[] = [
     originalPrice: 1000,
     popular: true,
     deliverable: '5 Personalised Digital Book PDFs',
-    deliveryTime: '24–48 Hours on WhatsApp',
+    deliveryTime: '1–2 Days on WhatsApp',
     features: [
       'Covers 5 different everyday habits / situations',
       'Includes School, Manners, Calming, Sleep & Kindness',
@@ -151,7 +151,7 @@ const PACKAGES: PackageOption[] = [
     price: 599,
     originalPrice: 999,
     deliverable: 'Full HD 1080p MP4 Video (9:16 Reel Format)',
-    deliveryTime: '48–72 Hours on WhatsApp',
+    deliveryTime: '2–3 Days on WhatsApp',
     features: [
       'Animated story video featuring your child’s name',
       'Professional gentle voiceover narration',
@@ -166,7 +166,7 @@ const PACKAGES: PackageOption[] = [
     price: 399,
     originalPrice: 599,
     deliverable: 'Ultra HD Print-Ready PDF & JPEG Spreads',
-    deliveryTime: '24–48 Hours on WhatsApp',
+    deliveryTime: '1–2 Days on WhatsApp',
     features: [
       '300 DPI CMYK files with bleed margins',
       'Print at home or your local photo lab / studio',
@@ -182,7 +182,7 @@ const PACKAGES: PackageOption[] = [
     price: 1299,
     originalPrice: 1799,
     deliverable: 'Physical Hardbound Book Delivered Across India',
-    deliveryTime: '5–7 Business Days (Free Shipping)',
+    deliveryTime: '5–7 Days (Free Shipping)',
     features: [
       'Premium hardbound gloss/matte cover',
       'Tear-resistant, child-safe thick glossy pages',
@@ -198,12 +198,12 @@ const PACKAGES: PackageOption[] = [
     price: 1399,
     originalPrice: 2499,
     deliverable: '5 PDFs + 1 Video Story + 300 DPI Print Files',
-    deliveryTime: 'Priority WhatsApp Delivery',
+    deliveryTime: '1–2 Days Priority WhatsApp',
     features: [
       'Complete 5 Custom Storybooks in PDF format',
       '1 Personalised Animated Video Story with voiceover',
       'Full 300 DPI Print-Ready files for printing',
-      'Priority delivery within 24–48 hours'
+      'Priority delivery within 1–2 days'
     ]
   }
 ];
@@ -462,7 +462,7 @@ export default function App() {
                 </div>
                 <div className="flex items-center gap-1.5">
                   <CheckCircle2 className="w-4 h-4 text-emerald-700 shrink-0" />
-                  <span>WhatsApp Delivery in 24h</span>
+                  <span>WhatsApp Delivery in 1–2 Days</span>
                 </div>
               </div>
 
@@ -807,7 +807,7 @@ export default function App() {
                   Mobile aur iPad par padhne ke liye instant social story PDFs.
                 </p>
                 <ul className="text-xs font-bold space-y-1.5 text-slate-800">
-                  <li>✓ 24–48 Ghante mein WhatsApp delivery</li>
+                  <li>✓ 1–2 Days mein WhatsApp delivery</li>
                   <li>✓ Child’s name & personalized story</li>
                   <li>✓ Single Book: ₹199</li>
                   <li>✓ 5 Books Combo: ₹699 (Save ₹301)</li>
@@ -951,8 +951,8 @@ export default function App() {
                           <span className="text-lg font-black text-[#24252b]">₹{pkg.price}</span>
                           <span className="text-xs text-slate-600 line-through">₹{pkg.originalPrice}</span>
                         </div>
-                        <span className="text-[10px] font-bold text-slate-700">
-                          {pkg.deliveryTime.split(' ')[0]}
+                        <span className="text-[11px] font-extrabold text-[#24252b] bg-black/5 px-2 py-0.5 rounded border border-black/10">
+                          ⚡ {pkg.deliveryTime.split(' ')[0]} days
                         </span>
                       </div>
                     </label>
@@ -1228,15 +1228,15 @@ export default function App() {
             <ul className="space-y-2.5 text-xs sm:text-sm font-bold text-slate-800">
               <li className="flex items-start gap-2">
                 <Check className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
-                <span><strong>Digital PDF Books:</strong> 24 se 48 ghanton mein high-res PDF WhatsApp par deliver hota hai.</span>
+                <span><strong>Digital PDF Books:</strong> 1 se 2 days mein high-res PDF WhatsApp par deliver hota hai.</span>
               </li>
               <li className="flex items-start gap-2">
                 <Check className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
-                <span><strong>Custom Video Story:</strong> 48 se 72 ghanton mein 1080p MP4 file with narration WhatsApp par aati hai.</span>
+                <span><strong>Custom Video Story:</strong> 2 se 3 days mein 1080p MP4 file with narration WhatsApp par aati hai.</span>
               </li>
               <li className="flex items-start gap-2">
                 <Check className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
-                <span><strong>Deluxe Hardcover Books:</strong> 5 se 7 working days mein courier se poore India mein doorstep delivery.</span>
+                <span><strong>Deluxe Hardcover Books:</strong> 5 se 7 days mein courier se poore India mein doorstep delivery.</span>
               </li>
               <li className="flex items-start gap-2">
                 <Check className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />

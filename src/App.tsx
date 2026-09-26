@@ -224,6 +224,7 @@ export default function App() {
   const [isVideoPlaying, setIsVideoPlaying] = useState(false);
 
   // Download Modal State
+  const [isDownloadModalOpen, setIsDownloadModalOpen] = useState(false);
   const [isCopiedHtml, setIsCopiedHtml] = useState(false);
   const [downloadingFormat, setDownloadingFormat] = useState<string | null>(null);
 

@@ -1,0 +1,627 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>LittleMindZ - Custom Story Books & Video Stories for Kids</title>
+<meta name="description" content="Personalised social story book PDFs, print editions, and custom animated video stories for children in India, delivered on WhatsApp.">
+<meta property="og:title" content="LittleMindZ - Custom Story Books & Video Stories for Kids">
+<meta property="og:description" content="Personalised stories and custom animated video reels for little minds, delivered on WhatsApp.">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root{--paper:#fffdf7;--ink:#24252b;--blue:#286dd7;--yellow:#f9d54a;--yellow-soft:#fff3ab;--pink:#f5cbd0;--sky:#bce3ef;--mint:#c9e7ca;--lilac:#dfd0ed;--red:#c92f3c;--muted:#686970;--card:#fff;--soft:#f8f4e9;--shadow:4px 4px 0 var(--ink);--shadow-lg:6px 6px 0 var(--ink)}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--paper);color:var(--ink);font-family:Nunito,system-ui,sans-serif;letter-spacing:-0.01em}
+button,input,select,textarea{font:inherit}button,a,label,select{cursor:pointer}img{display:block;max-width:100%}
+.wrap{width:min(100% - 32px,1040px);margin:auto}
+.hero{background:var(--yellow-soft);border-bottom:2px solid var(--ink);padding:18px 0 44px}
+.brand{display:flex;align-items:center;justify-content:space-between;gap:12px;background:var(--blue);color:#fff;border:2px solid var(--ink);border-radius:8px;padding:10px 14px;box-shadow:var(--shadow);font-weight:900}
+.brand-main{display:flex;align-items:center;gap:10px;min-width:0}
+.brand-icon{display:grid;place-items:center;width:38px;height:38px;flex:none;border-radius:50%;background:#fff;color:var(--blue);border:2px solid var(--ink)}
+.brand-name{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:16px}
+.brand-sub{font-size:11px;color:var(--yellow);display:block;font-weight:700}
+.hero-grid{display:grid;gap:30px;padding-top:32px;align-items:center}
+.pill{display:inline-flex;align-items:center;gap:6px;border:2px solid var(--ink);border-radius:999px;background:#fff;padding:5px 12px;font-size:11px;font-weight:900;text-transform:uppercase;box-shadow:2px 2px 0 var(--ink)}
+.hero h1{margin:14px 0 10px;font-size:clamp(32px,7.5vw,56px);line-height:1.02;font-weight:900}
+.blue{color:var(--blue);text-decoration:underline;text-decoration-color:var(--ink);text-decoration-style:wavy}
+.lead{font-size:16px;font-weight:700;line-height:1.55;color:#334155}
+.offer{margin-top:20px;border:2px solid var(--ink);background:var(--yellow);padding:18px;box-shadow:var(--shadow);border-radius:8px}
+.offer-row{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.offer h2{font-size:22px;margin:0;font-weight:900}
+.badge{background:var(--ink);color:var(--paper);border-radius:999px;padding:4px 10px;font-size:11px;font-weight:900}
+.price{font-size:36px;font-weight:900}.was{text-decoration:line-through;color:var(--muted);font-weight:700;font-size:16px}
+.save-tag{background:#d1fae5;color:#065f46;border:1px solid var(--ink);font-size:11px;font-weight:900;padding:2px 6px;border-radius:4px;margin-left:6px}
+.btn{display:inline-flex;min-height:48px;align-items:center;justify-content:center;gap:8px;border:2px solid var(--ink);border-radius:8px;background:var(--blue);color:#fff;padding:10px 18px;font-weight:900;text-decoration:none;box-shadow:var(--shadow);transition:0.15s;font-size:14px}
+.btn:hover{transform:translate(-1px,-1px);box-shadow:var(--shadow-lg)}.btn:active{transform:translate(2px,2px);box-shadow:2px 2px 0 var(--ink)}
+.btn.secondary{background:#fff;color:var(--ink)}.btn.full{width:100%}
+.btn-row{display:flex;flex-direction:column;gap:8px;margin-top:14px}
+@media(min-width:480px){.btn-row{flex-direction:row}.btn-row .btn{flex:1}}
+
+/* Carousel Styles */
+.carousel-box{border:2px solid var(--ink);background:#fff;box-shadow:var(--shadow-lg);border-radius:12px;padding:14px;position:relative}
+.carousel-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;border-bottom:1px solid #e2e8f0;padding-bottom:8px}
+.carousel-page{background:var(--ink);color:#fff;font-size:11px;font-weight:900;padding:2px 8px;border-radius:4px}
+.carousel-tag{color:var(--blue);font-size:12px;font-weight:900;text-transform:uppercase}
+.carousel-viewport{position:relative;overflow:hidden;border:2px solid var(--ink);border-radius:8px;background:#f1f5f9;aspect-ratio:3/4;touch-action:pan-y}
+.carousel-img{width:100%;height:100%;object-fit:cover;user-select:none;pointer-events:none}
+.carousel-nav-btn{position:absolute;top:50%;transform:translateY(-50%);width:38px;height:38px;border-radius:50%;background:#fff;border:2px solid var(--ink);box-shadow:2px 2px 0 var(--ink);display:flex;align-items:center;justify-content:center;z-index:5;font-weight:900}
+.carousel-nav-btn.prev{left:8px}.carousel-nav-btn.next{right:8px}
+.carousel-nav-btn:hover{background:var(--yellow)}
+.swipe-hint{position:absolute;top:8px;right:8px;background:rgba(0,0,0,0.7);color:#fff;font-size:10px;font-weight:800;padding:2px 8px;border-radius:999px}
+.carousel-caption{margin-top:10px;background:#fef3c7;border:1px solid #fde68a;padding:10px;border-radius:6px}
+.carousel-caption h4{margin:0;font-size:15px;font-weight:900}
+.carousel-caption p{margin:4px 0 0;font-size:12px;font-weight:700;color:#334155;font-style:italic}
+.carousel-thumbs{display:flex;gap:6px;margin-top:10px;overflow-x:auto;padding-bottom:4px}
+.thumb-btn{flex:1;min-width:50px;aspect-ratio:4/3;border:2px solid #cbd5e1;border-radius:4px;overflow:hidden;padding:0;background:#f8fafc;position:relative}
+.thumb-btn.active{border-color:var(--blue);box-shadow:0 0 0 2px rgba(40,109,215,0.4)}
+.thumb-btn img{width:100%;height:100%;object-fit:cover}
+
+/* Video Section */
+.video-section{background:var(--sky);border-bottom:2px solid var(--ink);padding:44px 0}
+.video-grid{display:grid;gap:24px;align-items:center;margin-top:20px}
+.video-card{border:2px solid var(--ink);background:#fff;border-radius:12px;padding:12px;box-shadow:var(--shadow-lg);max-width:320px;margin:auto;width:100%}
+.video-frame{position:relative;aspect-ratio:9/16;border:2px solid var(--ink);border-radius:8px;overflow:hidden;background:#0f172a}
+.video-frame iframe{width:100%;height:100%;border:0}
+.video-feat-list{border:2px solid var(--ink);background:#fff;border-radius:10px;padding:20px;box-shadow:var(--shadow)}
+.video-feat-list h3{margin:0 0 12px;font-size:20px;font-weight:900}
+.video-feat-list ul{list-style:none;padding:0;margin:0;display:grid;gap:12px}
+.video-feat-list li{display:flex;gap:10px;font-size:13px;font-weight:700}
+.step-num{width:22px;height:22px;border-radius:50%;background:var(--yellow);border:1px solid var(--ink);display:grid;place-items:center;font-size:11px;font-weight:900;flex:none}
+
+/* Offerings Cards */
+.section{padding:44px 0;border-bottom:2px solid var(--ink)}
+.section-title{margin:4px 0 8px;font-size:clamp(26px,6vw,40px);line-height:1.05;font-weight:900}
+.eyebrow{color:var(--blue);font-weight:900;text-transform:uppercase;font-size:12px}
+.cards-3{display:grid;gap:16px;margin-top:20px}
+.offer-card{border:2px solid var(--ink);border-radius:10px;padding:18px;box-shadow:var(--shadow);display:flex;flex-direction:column;justify-content:space-between}
+.offer-card:nth-child(1){background:var(--pink)}
+.offer-card:nth-child(2){background:var(--mint)}
+.offer-card:nth-child(3){background:var(--lilac)}
+.offer-card h3{margin:8px 0 4px;font-size:19px;font-weight:900}
+.offer-card p{margin:0 0 10px;font-size:13px;font-weight:700;color:#334155}
+.offer-card ul{padding-left:16px;margin:0;font-size:12px;font-weight:700;line-height:1.6}
+
+/* Order Form */
+.form-box{max-width:760px;margin:24px auto 0;display:grid;gap:20px}
+.field-group{border:2px solid var(--ink);border-radius:10px;background:#fff;padding:18px;box-shadow:var(--shadow)}
+.field-legend{font-weight:900;font-size:15px;display:flex;align-items:center;gap:8px;margin-bottom:12px}
+.step-badge{width:24px;height:24px;border-radius:50%;background:var(--yellow);border:2px solid var(--ink);display:grid;place-items:center;font-size:12px;font-weight:900;flex:none}
+.packages-grid{display:grid;gap:10px;grid-template-columns:1fr}
+@media(min-width:600px){.packages-grid{grid-template-columns:1fr 1fr}}
+.pkg-card{border:2px solid #cbd5e1;border-radius:8px;padding:12px;background:#fff;cursor:pointer;display:flex;flex-direction:column;justify-content:space-between;transition:0.1s}
+.pkg-card.active{border-color:var(--ink);background:var(--yellow);box-shadow:3px 3px 0 var(--ink)}
+.pkg-head{display:flex;align-items:flex-start;justify-content:space-between;gap:6px}
+.pkg-name{font-weight:900;font-size:13px;color:var(--ink);line-height:1.3}
+.pkg-desc{font-size:11px;font-weight:700;color:#475569;margin-top:3px}
+.pkg-price-row{display:flex;align-items:baseline;justify-content:space-between;margin-top:8px;padding-top:6px;border-top:1px solid rgba(0,0,0,0.1)}
+.pkg-price{font-size:16px;font-weight:900}
+.pkg-was{font-size:11px;text-decoration:line-through;color:var(--muted)}
+.input{width:100%;min-height:48px;border:2px solid var(--ink);border-radius:6px;background:#fff;padding:10px 12px;font-weight:700;font-size:14px;box-shadow:2px 2px 0 var(--ink);margin-top:6px}
+textarea.input{min-height:90px;resize:vertical}
+.input.invalid{border-color:var(--red);box-shadow:2px 2px 0 var(--red)}
+.error{display:none;color:var(--red);font-size:12px;font-weight:900;margin:4px 0 0}.error.show{display:block}
+.help{margin:4px 0 0;color:var(--muted);font-size:11px;font-weight:700}
+.phone-row{position:relative}.phone-prefix{position:absolute;left:12px;top:20px;font-weight:900;font-size:14px}
+.phone-row .input{padding-left:46px}
+.payment-box{border:2px solid var(--ink);background:#fff1b4;border-radius:10px;padding:16px;box-shadow:var(--shadow)}
+.payment-head{display:flex;align-items:center;justify-content:space-between;gap:10px;border-bottom:2px solid var(--ink);padding-bottom:10px}
+.payment-grid{display:grid;gap:16px;margin-top:14px;align-items:center}
+@media(min-width:600px){.payment-grid{grid-template-columns:160px 1fr}}
+.qr{width:150px;height:150px;margin:auto;border:2px solid var(--ink);background:#fff;padding:6px;border-radius:6px}
+.upload{display:flex;align-items:center;gap:12px;border:2px dashed var(--ink);border-radius:8px;background:var(--soft);padding:12px;cursor:pointer;margin-top:6px}
+.upload input{position:absolute;opacity:0;width:1px;height:1px}
+.info-grid{display:grid;gap:24px}
+@media(min-width:700px){
+  .hero-grid{grid-template-columns:1.05fr .95fr}
+  .video-grid{grid-template-columns:300px 1fr}
+  .cards-3{grid-template-columns:repeat(3,1fr)}
+  .info-grid{grid-template-columns:1fr 1fr}
+}
+.footer{background:var(--ink);color:var(--paper);padding:36px 0}
+.footer-row{display:flex;flex-direction:column;gap:16px}
+@media(min-width:640px){.footer-row{flex-direction:row;justify-content:space-between;align-items:center}}
+.footer a{color:var(--yellow);font-weight:800;text-decoration:none}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="wrap">
+    <div class="brand">
+      <div class="brand-main">
+        <span class="brand-icon" aria-hidden="true">📖</span>
+        <div>
+          <span class="brand-name">LittleMindZ</span>
+          <span class="brand-sub">Custom Story Books & Video Stories</span>
+        </div>
+      </div>
+      <a href="https://wa.me/918527166662" target="_blank" rel="noreferrer" class="btn secondary" style="min-height:36px;padding:6px 12px;font-size:12px">WhatsApp Neha</a>
+    </div>
+
+    <div class="hero-grid">
+      <div>
+        <span class="pill">★ 100% Personalised for Every Child</span>
+        <h1>Aapke bacche ke liye likhi <span class="blue">kahaani & video!</span></h1>
+        <p class="lead">Unke naam, photo aur real-life habits par based personalised social story books (PDF & Hardcover Print) aur custom animated video stories.</p>
+        
+        <div class="offer">
+          <div class="offer-row">
+            <h2>5 Custom Books Combo PDF</h2>
+            <span class="badge">BEST VALUE</span>
+          </div>
+          <div style="margin-top:4px">
+            <span class="price">₹699</span> <span class="was">₹1,000</span>
+            <span class="save-tag">SAVE ₹301</span>
+          </div>
+          <p style="font-size:12px;font-weight:700;margin:6px 0 0">5 alag situations (School, Manners, Calming, Sleep & Sharing) par personalized stories.</p>
+          <div class="btn-row">
+            <a class="btn" href="#order">Order Shuru Karein ↓</a>
+            <a class="btn secondary" href="#sample-video">▶ Sample Video Dekhein</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Touch-Responsive Storybook Carousel -->
+      <article class="carousel-box" id="carousel">
+        <div class="carousel-top">
+          <span class="carousel-page" id="slidePage">Page 1</span>
+          <span class="carousel-tag" id="slideTag">Cover & Intro</span>
+        </div>
+
+        <div class="carousel-viewport" id="viewport">
+          <img id="carouselImg" class="carousel-img" src="/assets/images/storybook_cover_siya_1790441764203.jpg" alt="Personalised Storybook Page">
+          <span class="swipe-hint">Swipe ↔</span>
+          <button class="carousel-nav-btn prev" id="prevBtn" type="button" aria-label="Previous page">‹</button>
+          <button class="carousel-nav-btn next" id="nextBtn" type="button" aria-label="Next page">›</button>
+        </div>
+
+        <div class="carousel-caption">
+          <h4 id="slideTitle">Aarav & Siya ki Kahaani Shuru</h4>
+          <p id="slideExcerpt">“Once upon a time, there was a sweet, curious little girl named Siya who was ready for a big day...”</p>
+        </div>
+
+        <div class="carousel-thumbs" id="thumbs">
+          <!-- Thumbnails injected by JS -->
+        </div>
+      </article>
+    </div>
+  </div>
+</header>
+
+<main>
+  <!-- Playable Video Section -->
+  <section class="video-section" id="sample-video">
+    <div class="wrap">
+      <div style="text-align:center;max-width:650px;margin:auto">
+        <span class="badge" style="background:var(--ink);color:#fff">NEW & TRENDING</span>
+        <h2 class="section-title">Playable Sample Video Story 🎬</h2>
+        <p style="font-weight:700;color:#334155;font-size:15px;margin:4px 0 0">Bacche ke naam aur cartoon character ke saath animated bedtime story reel with soothing voiceover!</p>
+      </div>
+
+      <div class="video-grid">
+        <div class="video-card">
+          <div class="video-frame" id="videoContainer">
+            <iframe id="youtubeIframe" src="https://www.youtube.com/embed/72Y4keyHIDU?rel=0&modestbranding=1&playsinline=1" title="Sample Custom Video Story" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+          </div>
+          <div style="text-align:center;margin-top:8px">
+            <a href="https://youtube.com/shorts/72Y4keyHIDU?si=dO48HaPpweCO8p10" target="_blank" rel="noreferrer" style="font-size:12px;font-weight:900;color:var(--blue)">Open in YouTube Shorts ↗</a>
+          </div>
+        </div>
+
+        <div class="video-feat-list">
+          <h3>Custom Video Story mein kya milta hai?</h3>
+          <ul>
+            <li><span class="step-num">1</span><div><strong>Personalised Voiceover:</strong> Story narration mein bacche ka naam baar-baar bola jaata hai.</div></li>
+            <li><span class="step-num">2</span><div><strong>Animated Visuals:</strong> 3D storybook illustrations animation aur soothing bedtime music ke saath.</div></li>
+            <li><span class="step-num">3</span><div><strong>9:16 Full HD Mobile Format:</strong> WhatsApp Status, Reels aur bedtime watching ke liye perfect.</div></li>
+            <li><span class="step-num">4</span><div><strong>Special Launch Price:</strong> Sirf <strong>₹599</strong> (Regular ₹999 · Save ₹400).</div></li>
+          </ul>
+          <a class="btn" href="#order" style="margin-top:16px;width:100%" onclick="selectPackage('video-story')">Video Story Package Select Karein →</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Offerings Cards: PDF, Print & Video -->
+  <section class="section">
+    <div class="wrap">
+      <small class="eyebrow">Complete Options</small>
+      <h2 class="section-title">Storybook Formats For Every Family</h2>
+      <div class="cards-3">
+        <div class="offer-card">
+          <div>
+            <span style="font-size:24px">📱</span>
+            <h3>Digital PDF Books</h3>
+            <p>Phone & tablet par padhne ke liye instant social story PDFs.</p>
+            <ul>
+              <li>24–48 Ghante mein WhatsApp delivery</li>
+              <li>1 Book PDF: ₹199</li>
+              <li>5 Books Combo PDF: ₹699 (Save ₹301)</li>
+            </ul>
+          </div>
+          <a class="btn secondary" href="#order" style="margin-top:14px" onclick="selectPackage('pdf-combo')">Choose PDF Bundle</a>
+        </div>
+
+        <div class="offer-card">
+          <div>
+            <span style="font-size:24px">📖</span>
+            <h3>Print Editions</h3>
+            <p>Ghar par print karein ya premium physical hardcover mangwayein.</p>
+            <ul>
+              <li>300 DPI Print-Ready Files: ₹399</li>
+              <li>Deluxe Hardcover Printed Book: ₹1,299</li>
+              <li>Free Doorstep Delivery across India</li>
+            </ul>
+          </div>
+          <a class="btn secondary" href="#order" style="margin-top:14px" onclick="selectPackage('print-hardcover')">Choose Print Edition</a>
+        </div>
+
+        <div class="offer-card">
+          <div>
+            <span style="font-size:24px">🎬</span>
+            <h3>Video & Super Combos</h3>
+            <p>Animated bedtime video reels aur complete all-in-one gift packs.</p>
+            <ul>
+              <li>Custom Video Story (HD): ₹599</li>
+              <li>All-in-One Magic Bundle: ₹1,399 (5 PDFs + 1 Video + Print Files)</li>
+              <li>Save ₹1,100 on Magic Bundle</li>
+            </ul>
+          </div>
+          <a class="btn secondary" href="#order" style="margin-top:14px" onclick="selectPackage('all-in-one')">Choose Magic Combo</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 2-Minute Order Form -->
+  <section class="section" id="order" style="background:#fffdf7">
+    <div class="wrap">
+      <div style="text-align:center;max-width:600px;margin:auto">
+        <small class="eyebrow">Fast WhatsApp Order</small>
+        <h2 class="section-title">Apne Bacche Ki Kahaani Banayein</h2>
+        <p style="font-size:14px;font-weight:700;color:var(--muted)">Package chunein, details bharein, payment karein, phir WhatsApp par Neha ko order bhejein.</p>
+      </div>
+
+      <form class="form-box" id="orderForm" novalidate>
+        <!-- 1. Package Selection -->
+        <fieldset class="field-group">
+          <legend class="field-legend"><span class="step-badge">1</span> Package Select Karein:</legend>
+          <div class="packages-grid" id="packagesContainer">
+            <!-- Injected by JS -->
+          </div>
+        </fieldset>
+
+        <!-- 2. Child Details -->
+        <div class="field-group">
+          <div class="field-legend"><span class="step-badge" style="background:var(--sky)">2</span> Bacche Ki Details:</div>
+          
+          <label style="font-size:13px;font-weight:900" for="childName">Bacche Ka Naam *</label>
+          <input class="input" id="childName" name="childName" placeholder="Jaise Aarav ya Siya" maxlength="50" autocomplete="name">
+          <p class="error" id="childName-error"></p>
+
+          <label style="font-size:13px;font-weight:900;display:block;margin-top:12px" for="age">Bacche Ki Age *</label>
+          <select class="input" id="age" name="age">
+            <option value="">Age select karein</option>
+            <option>1–2 years (Toddler)</option>
+            <option>2–3 years (Preschool)</option>
+            <option>3–4 years (School Prep / Feelings)</option>
+            <option>4–5 years (Confidence / Sibling)</option>
+            <option>5–6 years (Habits / Focus)</option>
+            <option>6–8 years (Reading / Responsibility)</option>
+          </select>
+          <p class="error" id="age-error"></p>
+
+          <label style="font-size:13px;font-weight:900;display:block;margin-top:12px" for="situations">2 Habits ya Situations jisme help chahiye *</label>
+          <textarea class="input" id="situations" name="situations" placeholder="Jaise: School jaane par rota hai, toys share nahi karta, gusse mein cheekhta hai, veggies nahi khata..." maxlength="300"></textarea>
+          <p class="help">Isi detail ke mutabiq story aur video customise hogi.</p>
+          <p class="error" id="situations-error"></p>
+
+          <div id="addressGroup" style="display:none;margin-top:12px">
+            <label style="font-size:13px;font-weight:900;display:block" for="address">📦 Courier Delivery Address & 6-digit Pincode *</label>
+            <textarea class="input" id="address" name="address" placeholder="House/Flat No., Street, City, State, 6-digit Pincode..."></textarea>
+            <p class="error" id="address-error"></p>
+          </div>
+
+          <label style="font-size:13px;font-weight:900;display:block;margin-top:12px" for="phone">Aapka WhatsApp Number (PDF / Video yahan deliver hoga) *</label>
+          <div class="phone-row">
+            <span class="phone-prefix">+91</span>
+            <input class="input" id="phone" name="phone" type="tel" inputmode="numeric" maxlength="10" placeholder="98765 43210">
+          </div>
+          <p class="error" id="phone-error"></p>
+        </div>
+
+        <!-- 3. Payment Section -->
+        <div class="payment-box">
+          <div class="payment-head">
+            <div>
+              <h3 style="margin:0;font-size:20px;font-weight:900">Pay <span id="payAmountText">₹699</span> via UPI</h3>
+              <small id="payPackageText" style="font-weight:700;color:#334155">5 Books Combo PDF</small>
+            </div>
+            <span class="badge">UPI</span>
+          </div>
+
+          <div class="payment-grid">
+            <div style="text-align:center">
+              <img class="qr" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAUgAAAFIAQMAAAAI2vVwAAAABlBMVEUAAAD///+l2Z/dAAAAAnRSTlP//8i138cAAAAJcEhZcwAACxIAAAsSAdLdfvwAAAGwSURBVGiB7dXBbsMwDANQ/v9Pc2hNSupQrPIO24UpEDT2Uw4yq4LbC5GR/yFxrucDVPp41Ip3I7dSjYXLqtdg70bu5WN3eHS30buRl9J3t5ov65G3ki9GsY78hVSGK8Reerp3MyTyJ1nbbz81JSJ3si73XIWYe5FrWRtq9Ck/A6I+kXupnvci/f8lAkZeSF99DDyFUA36hZEfpW+9pmhX52e0Iz9JuN3ut1JcC1UUuZLnp2+hvU4xtR65k9V/jgFBpbkmReRaoqaCQ+toE6xYRy4lahzMG0aoEXkhvVtprnGhJ02OyJ0cK2NSVN8rxpFr2amWOOQl3ZFb6f8onwEwuCsi19Ld1oI9yTqHyL30rptOj9cuGe2PXEmowJ2n4RggkSt5IquWQ7Vj15WRawm3WY3uUOsNjLyRZ8cDAT0iqi7yUnZmvUQKzmBHLqRjDHo8fD+PyL305fwWpnPsk4jcyOpvfdUpaNVPkUt5mkyq366YIyLyRlaHqUa/hBvwqIi8kmr0TO84gchbOfosxZnzyK083x1ieMT2SyJvJBzYenDHT5o5DyPyk1xekZF/L78AcKhrO8JdI6gAAAAASUVORK5CYII=" alt="UPI QR Code for Neha Thakur">
+              <span style="font-size:11px;font-weight:700;display:block;margin-top:4px">GPay / PhonePe / Paytm</span>
+            </div>
+            <div>
+              <a class="btn full" id="upiPayLink" href="#">Pay with UPI App</a>
+              <button class="btn secondary full" type="button" id="copyUpiBtn" style="margin-top:8px">Copy UPI ID: 8527166662@pthdfc</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- 4. Screenshot Upload & Submit -->
+        <div class="field-group">
+          <div class="field-legend"><span class="step-badge" style="background:var(--mint)">4</span> Payment Screenshot (Recommended):</div>
+          <label class="upload">
+            <span style="font-size:24px">📸</span>
+            <div>
+              <strong id="fileName" style="font-size:13px;display:block">Screenshot choose karein</strong>
+              <small style="color:var(--muted)">JPG/PNG up to 5 MB. (WhatsApp chat mein bhi attach kar sakte hain)</small>
+            </div>
+            <input id="proof" type="file" accept="image/jpeg,image/png">
+          </label>
+          <p class="error" id="proof-error"></p>
+
+          <button class="btn full" type="submit" style="margin-top:16px;font-size:16px;min-height:52px">Order WhatsApp Par Bhejo →</button>
+          <p style="text-align:center;font-size:12px;font-weight:700;color:var(--muted);margin:8px 0 0">
+            🔒 WhatsApp khulega jahan Neha aapke order aur payment ko confirm karengi.
+          </p>
+        </div>
+      </form>
+    </div>
+  </section>
+
+  <!-- Info & Trust Section -->
+  <section class="section" style="background:var(--yellow)">
+    <div class="wrap info-grid">
+      <div>
+        <small class="eyebrow" style="color:var(--ink)">DELIVERY & TIMELINES</small>
+        <h2 style="font-size:24px;font-weight:900;margin:6px 0 10px">Kahaani Kab Milegi?</h2>
+        <ul style="list-style:none;padding:0;margin:0;font-size:14px;font-weight:700;line-height:1.7">
+          <li>✓ <strong>PDF Books:</strong> 24–48 hours mein WhatsApp delivery.</li>
+          <li>✓ <strong>Custom Video Story:</strong> 48–72 hours mein Full HD MP4 file.</li>
+          <li>✓ <strong>Hardcover Books:</strong> 5–7 business days mein doorstep courier across India.</li>
+          <li>✓ <strong>Free Correction:</strong> Name ya spelling error ho to WhatsApp par free update.</li>
+        </ul>
+      </div>
+      <div>
+        <small class="eyebrow" style="color:var(--ink)">FAMILY PRIVACY</small>
+        <h2 style="font-size:24px;font-weight:900;margin:6px 0 10px">Aapka Data Safe Hai</h2>
+        <p style="font-size:14px;font-weight:700;line-height:1.6">
+          Child ka naam, age, situations aur payment details sirf unki personal story aur video banane ke liye use hote hain. Hum koi data kisi third party ke saath share nahi karte. Order deliver hone ke baad aap jab chahein WhatsApp par message karke apna data delete karwa sakte hain.
+        </p>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="footer">
+  <div class="wrap footer-row">
+    <div>
+      <h3 style="margin:0;font-size:20px;color:var(--yellow)">LittleMindZ</h3>
+      <p style="margin:4px 0 6px;font-size:13px;color:#cbd5e1">Personalised stories and custom videos, lovingly created by Neha Thakur for growing minds.</p>
+      <a href="https://instagram.com/faithfamilylife_nehathakur" target="_blank" rel="noreferrer">Instagram: @faithfamilylife_nehathakur</a>
+    </div>
+    <div>
+      <a href="https://wa.me/918527166662" target="_blank" rel="noreferrer" style="font-size:14px">WhatsApp: +91 8527166662</a>
+      <p style="font-size:12px;color:#94a3b8;margin:4px 0 0">© 2026 LittleMindZ. All rights reserved.</p>
+    </div>
+  </div>
+</footer>
+
+<script>
+(()=>{
+'use strict';
+
+const SLIDES = [
+  { page: 'Page 1', tag: 'Cover & Intro', title: 'Aarav & Siya ki Kahaani Shuru', excerpt: '“Once upon a time, there was a sweet, curious little girl named Siya who was ready for a big day...”', src: '/assets/images/storybook_cover_siya_1790441764203.jpg' },
+  { page: 'Page 6', tag: 'Parent-Child Bond', title: 'Mumma Ka Special Message', excerpt: '“Mommy sat beside her and whispered, ‘You have something very special inside you—bravery and love.’ ”', src: '/assets/images/storybook_mom_daughter_1790441775869.jpg' },
+  { page: 'Page 7', tag: 'Self-Esteem', title: 'The Magic Mirror: Hello Siya!', excerpt: '“A golden glow sparkled on the mirror. Letters appeared: ‘You are kind, brave, and deeply loved.’ ”', src: '/assets/images/storybook_magic_mirror_1790441787973.jpg' },
+  { page: 'Page 8', tag: 'Habits & Calming', title: 'Pause, Breathe & Choose Kindness', excerpt: '“When big feelings come: Stop... take a deep breath... and choose gentle words.”', src: '/assets/images/storybook_calming_steps_1790441800866.jpg' },
+  { page: 'Deluxe Print', tag: 'Doorstep Delivery', title: 'Physical Hardcover Showcase', excerpt: '“Thick 300 GSM glossy, tear-resistant pages with vibrant colors, delivered to your home.”', src: '/assets/images/printed_book_showcase_1790441813451.jpg' }
+];
+
+const PACKAGES = [
+  { id: 'pdf-single', name: '1 Custom Story PDF', price: 199, was: 299, desc: '1 Habit / Milestone PDF' },
+  { id: 'pdf-combo', name: '5 Custom Stories Combo PDF', price: 699, was: 1000, desc: 'Best Value for 5 Habits', badge: 'POPULAR' },
+  { id: 'video-story', name: 'Personalised Video Story', price: 599, was: 999, desc: 'HD 9:16 Video + Voiceover', badge: 'NEW' },
+  { id: 'print-ready', name: 'Print-Ready 300 DPI Files', price: 399, was: 599, desc: 'Print at home or local lab' },
+  { id: 'print-hardcover', name: 'Deluxe Printed Hardcover Book', price: 1299, was: 1799, desc: 'Hardbound book delivered across India', badge: 'DELUXE' },
+  { id: 'all-in-one', name: 'The Ultimate Magic Bundle', price: 1399, was: 2499, desc: '5 PDFs + 1 Video + Print Files', badge: 'SAVE ₹1,100' }
+];
+
+let curSlide = 0;
+let selectedPkgId = 'pdf-combo';
+let proofFileName = '';
+let autoPlayTimer = null;
+
+const $ = s => document.querySelector(s);
+const all = s => document.querySelectorAll(s);
+
+function renderCarousel() {
+  const item = SLIDES[curSlide];
+  $('#slidePage').textContent = item.page;
+  $('#slideTag').textContent = item.tag;
+  $('#carouselImg').src = item.src;
+  $('#slideTitle').textContent = item.title;
+  $('#slideExcerpt').textContent = item.excerpt;
+
+  all('.thumb-btn').forEach((b, i) => b.classList.toggle('active', i === curSlide));
+}
+
+function nextSlide() { curSlide = (curSlide + 1) % SLIDES.length; renderCarousel(); }
+function prevSlide() { curSlide = (curSlide - 1 + SLIDES.length) % SLIDES.length; renderCarousel(); }
+
+const thumbsCont = $('#thumbs');
+SLIDES.forEach((item, idx) => {
+  const btn = document.createElement('button');
+  btn.type = 'button';
+  btn.className = `thumb-btn ${idx === 0 ? 'active' : ''}`;
+  btn.innerHTML = `<img src="${item.src}" alt="${item.title}">`;
+  btn.addEventListener('click', () => {
+    curSlide = idx;
+    clearInterval(autoPlayTimer);
+    renderCarousel();
+  });
+  thumbsCont.appendChild(btn);
+});
+
+$('#prevBtn').addEventListener('click', () => { clearInterval(autoPlayTimer); prevSlide(); });
+$('#nextBtn').addEventListener('click', () => { clearInterval(autoPlayTimer); nextSlide(); });
+
+let touchX = null;
+const viewport = $('#viewport');
+viewport.addEventListener('touchstart', e => { touchX = e.touches[0].clientX; }, { passive: true });
+viewport.addEventListener('touchend', e => {
+  if (touchX === null) return;
+  const diff = touchX - e.changedTouches[0].clientX;
+  if (diff > 40) { clearInterval(autoPlayTimer); nextSlide(); }
+  else if (diff < -40) { clearInterval(autoPlayTimer); prevSlide(); }
+  touchX = null;
+}, { passive: true });
+
+autoPlayTimer = setInterval(nextSlide, 4500);
+
+const pkgCont = $('#packagesContainer');
+PACKAGES.forEach(pkg => {
+  const label = document.createElement('label');
+  label.className = `pkg-card ${pkg.id === selectedPkgId ? 'active' : ''}`;
+  label.dataset.id = pkg.id;
+  label.innerHTML = `
+    <div>
+      <div class="pkg-head">
+        <input type="radio" name="pkg" value="${pkg.id}" ${pkg.id === selectedPkgId ? 'checked' : ''}>
+        ${pkg.badge ? `<span class="badge" style="font-size:9px">${pkg.badge}</span>` : ''}
+      </div>
+      <div class="pkg-name">${pkg.name}</div>
+      <div class="pkg-desc">${pkg.desc}</div>
+    </div>
+    <div class="pkg-price-row">
+      <span class="pkg-price">₹${pkg.price}</span>
+      <span class="pkg-was">₹${pkg.was}</span>
+    </div>
+  `;
+  label.addEventListener('click', () => selectPackage(pkg.id));
+  pkgCont.appendChild(label);
+});
+
+window.selectPackage = function(id) {
+  selectedPkgId = id;
+  const pkg = PACKAGES.find(p => p.id === id);
+  if (!pkg) return;
+
+  all('.pkg-card').forEach(c => c.classList.toggle('active', c.dataset.id === id));
+  $(`input[name=pkg][value="${id}"]`).checked = true;
+
+  $('#payAmountText').textContent = '₹' + pkg.price;
+  $('#payPackageText').textContent = pkg.name;
+
+  $('#addressGroup').style.display = id === 'print-hardcover' ? 'block' : 'none';
+
+  const upiLink = `upi://pay?pa=8527166662@pthdfc&pn=${encodeURIComponent('Neha Thakur')}&am=${pkg.price}&cu=INR&tn=${encodeURIComponent('LittleMindZ ' + pkg.name)}`;
+  $('#upiPayLink').href = upiLink;
+  $('#upiPayLink').textContent = `Pay ₹${pkg.price} with UPI App`;
+};
+
+selectPackage('pdf-combo');
+
+$('#copyUpiBtn').addEventListener('click', async () => {
+  try {
+    await navigator.clipboard.writeText('8527166662@pthdfc');
+    $('#copyUpiBtn').textContent = '✓ UPI ID Copied (8527166662@pthdfc)';
+    setTimeout(() => { $('#copyUpiBtn').textContent = 'Copy UPI ID: 8527166662@pthdfc'; }, 2000);
+  } catch(e) {
+    $('#copyUpiBtn').textContent = 'UPI ID: 8527166662@pthdfc';
+  }
+});
+
+$('#proof').addEventListener('change', e => {
+  const f = e.target.files && e.target.files[0];
+  if (!f) { proofFileName = ''; $('#fileName').textContent = 'Screenshot choose karein'; return; }
+  if (!['image/jpeg', 'image/png'].includes(f.type) || f.size > 5 * 1024 * 1024) {
+    showError('proof', 'Kripya JPG/PNG image chunein (5MB se chhota)');
+    e.target.value = '';
+    proofFileName = '';
+    $('#fileName').textContent = 'Screenshot choose karein';
+    return;
+  }
+  clearError('proof');
+  proofFileName = f.name.slice(0, 40);
+  $('#fileName').textContent = proofFileName;
+});
+
+function clearError(id) {
+  const el = $('#' + id);
+  const err = $('#' + id + '-error');
+  if (el) el.classList.remove('invalid');
+  if (err) { err.classList.remove('show'); err.textContent = ''; }
+}
+
+function showError(id, msg) {
+  const el = $('#' + id);
+  const err = $('#' + id + '-error');
+  if (el) el.classList.add('invalid');
+  if (err) { err.classList.add('show'); err.textContent = msg; }
+}
+
+['childName', 'age', 'situations', 'phone', 'address'].forEach(id => {
+  const el = $('#' + id);
+  if (el) el.addEventListener('input', () => clearError(id));
+});
+
+$('#orderForm').addEventListener('submit', e => {
+  e.preventDefault();
+  const name = $('#childName').value.trim();
+  const age = $('#age').value;
+  const sits = $('#situations').value.trim();
+  const phone = $('#phone').value.replace(/[\s-]/g, '');
+  const addr = $('#address').value.trim();
+
+  let hasErr = false;
+  ['childName', 'age', 'situations', 'phone', 'address'].forEach(clearError);
+
+  if (name.length < 2) { showError('childName', 'Bacche ka naam likhiye'); hasErr = true; }
+  if (!age) { showError('age', 'Age select kijiye'); hasErr = true; }
+  if (sits.length < 8) { showError('situations', 'Thoda detail mein batayein'); hasErr = true; }
+  if (selectedPkgId === 'print-hardcover' && addr.length < 15) {
+    showError('address', 'Delivery address aur pincode likhein');
+    hasErr = true;
+  }
+  if (!/^[6-9]\d{9}$/.test(phone)) {
+    showError('phone', '10 digit ka valid Indian WhatsApp number likhiye');
+    hasErr = true;
+  }
+
+  if (hasErr) return;
+
+  const pkg = PACKAGES.find(p => p.id === selectedPkgId);
+  const msg = [
+    '🌸 *Hi Neha, mujhe LittleMindZ custom story order karni hai!*',
+    '',
+    `👶 *Child's Name:* ${name}`,
+    `🎂 *Age:* ${age}`,
+    `✨ *Habits / Theme:* ${sits}`,
+    `📦 *Package:* ${pkg.name}`,
+    `💰 *Price:* Rs ${pkg.price} (Regular: Rs ${pkg.was})`,
+    `📱 *WhatsApp:* +91 ${phone}`,
+    selectedPkgId === 'print-hardcover' ? `🏠 *Address:* ${addr}` : null,
+    proofFileName ? `📸 *Payment Proof:* ${proofFileName} (Attaching here)` : '📸 *Payment Proof:* Attaching screenshot in this chat',
+    '',
+    'Please confirm my payment and order. Thank you!'
+  ].filter(Boolean).join('
+');
+
+  window.open(`https://wa.me/918527166662?text=${encodeURIComponent(msg)}`, '_blank');
+});
+
+renderCarousel();
+})();
+</script>
+</body>
+</html>

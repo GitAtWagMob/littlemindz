@@ -1,0 +1,6 @@
+{
+  "name": "LittleMindZ - Custom Story Books & Video Stories for Kids",
+  "description": "Personalised social story books, print editions, and custom animated video stories for children in India, delivered on WhatsApp.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

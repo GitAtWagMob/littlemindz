@@ -423,7 +423,7 @@ export default function App() {
 
             <h1 className="text-3xl sm:text-5xl font-black leading-[1.05] tracking-tight">
               Aapke bacche ke naam aur aadat par bani{' '}
-              <span className="text-[#286dd7] underline decoration-[#24252b] decoration-wavy decoration-2">
+              <span className="text-[#286dd7]">
                 kahaani & video!
               </span>
             </h1>

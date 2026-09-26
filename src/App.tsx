@@ -392,7 +392,7 @@ export default function App() {
                 LittleMindZ
               </span>
               <span className="text-[11px] font-bold text-yellow-300 tracking-wide">
-                Custom Stories & Videos for Kids
+                Custom Stories for kids
               </span>
             </div>
           </div>

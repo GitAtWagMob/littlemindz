@@ -9,6 +9,8 @@ import momImg from './assets/images/storybook_mom_daughter_1790441775869.jpg';
 import mirrorImg from './assets/images/storybook_magic_mirror_1790441787973.jpg';
 import calmImg from './assets/images/storybook_calming_steps_1790441800866.jpg';
 import printImg from './assets/images/printed_book_showcase_1790441813451.jpg';
+import { CultureBookReader } from './components/CultureBookReader';
+import { CULTURE_BOOKS, CultureBook } from './data/cultureBooks';
 import {
   BookOpen,
   Sparkles,
@@ -51,6 +53,7 @@ interface StorySlide {
 
 interface PackageOption {
   id: string;
+  catalogType: 'custom' | 'culture';
   category: 'pdf' | 'print' | 'video' | 'combo';
   name: string;
   badge?: string;
@@ -60,6 +63,7 @@ interface PackageOption {
   deliverable: string;
   deliveryTime: string;
   popular?: boolean;
+  bookTitle?: string;
 }
 
 const STORY_SLIDES: StorySlide[] = [
@@ -111,8 +115,67 @@ const STORY_SLIDES: StorySlide[] = [
 ];
 
 const PACKAGES: PackageOption[] = [
+  // --- Indian Culture & Festivals Series (Ready Books) ---
+  {
+    id: 'culture-maa-durga-pdf',
+    catalogType: 'culture',
+    category: 'pdf',
+    name: 'My Loving Maa Durga (PDF)',
+    bookTitle: 'My Loving Maa Durga',
+    badge: 'FESTIVAL SPECIAL',
+    price: 149,
+    originalPrice: 249,
+    popular: true,
+    deliverable: '1 High-Resolution Digital Book PDF on WhatsApp',
+    deliveryTime: 'Instant on WhatsApp',
+    features: [
+      'Authored by Neha Thakur for LittleMindZ',
+      'Simple early reader sentences + sight words',
+      'Full 10 illustrated pages + Nine Forms of Durga',
+      'Instant download to read on phone, iPad & laptop'
+    ]
+  },
+  {
+    id: 'culture-maa-durga-hardcover',
+    catalogType: 'culture',
+    category: 'print',
+    name: 'My Loving Maa Durga (Deluxe Hardcover)',
+    bookTitle: 'My Loving Maa Durga',
+    badge: 'DELUXE KEEPSAKE',
+    price: 899,
+    originalPrice: 1299,
+    deliverable: 'Physical Hardbound Book Delivered Across India',
+    deliveryTime: '4–6 Days (Free Courier Delivery)',
+    features: [
+      'Premium hardbound glossy cover with gold highlights',
+      'Tear-resistant, toddler-safe thick photo paper',
+      'Personal blessing note from Author Neha Thakur',
+      'Free courier shipping with tracking across India'
+    ]
+  },
+  {
+    id: 'culture-all-festivals-pass',
+    catalogType: 'culture',
+    category: 'combo',
+    name: 'Indian Festivals Digital Collector Pack',
+    bookTitle: 'Complete Culture Series',
+    badge: 'BEST VALUE PACK',
+    price: 299,
+    originalPrice: 599,
+    deliverable: '3 Festival Learning PDFs (Durga + Ganesha + Diwali)',
+    deliveryTime: 'Instant on WhatsApp',
+    features: [
+      'Includes "My Loving Maa Durga" (Instant)',
+      'Pre-order pass for "My Sweet Bal Ganesha" PDF',
+      'Pre-order pass for "The Joyful Lights of Diwali" PDF',
+      'Delivered straight to your WhatsApp as each releases'
+    ]
+  },
+
+  // --- Personalized Storybooks (Custom Name & Habits) ---
   {
     id: 'pdf-single',
+    catalogType: 'custom',
     category: 'pdf',
     name: '1 Custom Story PDF',
     price: 199,
@@ -128,6 +191,7 @@ const PACKAGES: PackageOption[] = [
   },
   {
     id: 'pdf-combo',
+    catalogType: 'custom',
     category: 'pdf',
     name: '5 Custom Stories Combo PDF',
     badge: 'MOST POPULAR',
@@ -145,6 +209,7 @@ const PACKAGES: PackageOption[] = [
   },
   {
     id: 'video-story',
+    catalogType: 'custom',
     category: 'video',
     name: 'Personalised Animated Video Story',
     badge: 'NEW & TRENDING',
@@ -161,6 +226,7 @@ const PACKAGES: PackageOption[] = [
   },
   {
     id: 'print-ready',
+    catalogType: 'custom',
     category: 'print',
     name: 'Print-Ready 300 DPI HD Files',
     price: 399,
@@ -176,6 +242,7 @@ const PACKAGES: PackageOption[] = [
   },
   {
     id: 'print-hardcover',
+    catalogType: 'custom',
     category: 'print',
     name: 'Deluxe Printed Hardcover Book',
     badge: 'PREMIUM KEEPSAKE',
@@ -192,6 +259,7 @@ const PACKAGES: PackageOption[] = [
   },
   {
     id: 'all-in-one',
+    catalogType: 'custom',
     category: 'combo',
     name: 'The Ultimate Magic Bundle',
     badge: 'BEST VALUE · SAVE ₹1,100',
@@ -221,8 +289,12 @@ export default function App() {
   // Video State
   const [isVideoPlaying, setIsVideoPlaying] = useState(false);
 
+  // Dual Catalog State
+  const [catalogTab, setCatalogTab] = useState<'culture' | 'custom'>('culture');
+  const [selectedReaderBook, setSelectedReaderBook] = useState<CultureBook | null>(null);
+
   // Order & Configurator State
-  const [selectedPackageId, setSelectedPackageId] = useState<string>('pdf-combo');
+  const [selectedPackageId, setSelectedPackageId] = useState<string>('culture-maa-durga-pdf');
   const [childName, setChildName] = useState('');
   const [childAge, setChildAge] = useState('');
   const [situations, setSituations] = useState('');
@@ -233,8 +305,9 @@ export default function App() {
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [copiedUpi, setCopiedUpi] = useState(false);
 
-  const selectedPackage = PACKAGES.find(p => p.id === selectedPackageId) || PACKAGES[1];
-  const isPhysicalPrint = selectedPackage.category === 'print' && selectedPackage.id === 'print-hardcover';
+  const selectedPackage = PACKAGES.find(p => p.id === selectedPackageId) || PACKAGES[0];
+  const isPhysicalPrint = selectedPackage.category === 'print';
+  const isCultureOrder = selectedPackage.catalogType === 'culture';
 
   // Auto-play carousel
   useEffect(() => {
@@ -320,18 +393,21 @@ export default function App() {
   const validateForm = () => {
     const errs: Record<string, string> = {};
 
-    if (!childName.trim()) {
-      errs.childName = 'Bacche ka naam likhein';
-    } else if (childName.trim().length < 2) {
-      errs.childName = 'Kam se kam 2 akshar likhein';
-    }
+    // Only require child details if it's a personalized custom story
+    if (!isCultureOrder) {
+      if (!childName.trim()) {
+        errs.childName = 'Bacche ka naam likhein';
+      } else if (childName.trim().length < 2) {
+        errs.childName = 'Kam se kam 2 akshar likhein';
+      }
 
-    if (!childAge) {
-      errs.childAge = 'Bacche ki age select karein';
-    }
+      if (!childAge) {
+        errs.childAge = 'Bacche ki age select karein';
+      }
 
-    if (!situations.trim() || situations.trim().length < 8) {
-      errs.situations = 'Thoda detail mein batayein (jaise: school jaane mein dar lagta hai)';
+      if (!situations.trim() || situations.trim().length < 8) {
+        errs.situations = 'Thoda detail mein batayein (jaise: school jaane mein dar lagta hai)';
+      }
     }
 
     if (isPhysicalPrint && (!deliveryAddress.trim() || deliveryAddress.trim().length < 15)) {
@@ -359,20 +435,33 @@ export default function App() {
     }
 
     const cleanPhone = phone.replace(/[\s-]/g, '');
-    const lines = [
-      '🌸 *Hi Neha, mujhe LittleMindZ custom story order karni hai!*',
-      '',
-      `👶 *Child's Name:* ${childName.trim()}`,
-      `🎂 *Age:* ${childAge}`,
-      `✨ *Habits / Theme:* ${situations.trim()}`,
-      `📦 *Selected Offering:* ${selectedPackage.name}`,
-      `💰 *Price:* ₹${selectedPackage.price} (Original: ₹${selectedPackage.originalPrice})`,
-      `📱 *My WhatsApp:* +91 ${cleanPhone}`,
-      isPhysicalPrint ? `🏠 *Delivery Address:* ${deliveryAddress.trim()}` : null,
-      fileName ? `📸 *Payment Proof:* ${fileName} (Attaching screenshot here)` : '📸 *Payment Proof:* Attaching screenshot in this chat',
-      '',
-      'Please confirm my payment and start crafting my personalized story. Thank you!'
-    ].filter(Boolean);
+    const lines = isCultureOrder
+      ? [
+          '🌸 *Hi Neha, mujhe Indian Culture Learning Book order karni hai!*',
+          '',
+          `📚 *Book Title:* ${selectedPackage.bookTitle || selectedPackage.name}`,
+          `📦 *Format:* ${selectedPackage.name}`,
+          `💰 *Price:* ₹${selectedPackage.price} (Original: ₹${selectedPackage.originalPrice})`,
+          `📱 *My WhatsApp:* +91 ${cleanPhone}`,
+          isPhysicalPrint ? `🏠 *Delivery Address:* ${deliveryAddress.trim()}` : null,
+          fileName ? `📸 *Payment Proof:* ${fileName} (Attaching screenshot here)` : '📸 *Payment Proof:* Attaching screenshot in this chat',
+          '',
+          'Please confirm my payment and dispatch my learning book. Thank you!'
+        ].filter(Boolean)
+      : [
+          '🌸 *Hi Neha, mujhe LittleMindZ custom story order karni hai!*',
+          '',
+          `👶 *Child's Name:* ${childName.trim()}`,
+          `🎂 *Age:* ${childAge}`,
+          `✨ *Habits / Theme:* ${situations.trim()}`,
+          `📦 *Selected Offering:* ${selectedPackage.name}`,
+          `💰 *Price:* ₹${selectedPackage.price} (Original: ₹${selectedPackage.originalPrice})`,
+          `📱 *My WhatsApp:* +91 ${cleanPhone}`,
+          isPhysicalPrint ? `🏠 *Delivery Address:* ${deliveryAddress.trim()}` : null,
+          fileName ? `📸 *Payment Proof:* ${fileName} (Attaching screenshot here)` : '📸 *Payment Proof:* Attaching screenshot in this chat',
+          '',
+          'Please confirm my payment and start crafting my personalized story. Thank you!'
+        ].filter(Boolean);
 
     const message = lines.join('\n');
     window.open(`https://wa.me/918527166662?text=${encodeURIComponent(message)}`, '_blank');
@@ -396,6 +485,30 @@ export default function App() {
               </span>
             </div>
           </div>
+
+          <nav className="hidden sm:flex items-center gap-4 text-xs font-bold text-white">
+            <button
+              onClick={() => {
+                setCatalogTab('culture');
+                document.getElementById('culture-books')?.scrollIntoView({ behavior: 'smooth' });
+              }}
+              className="hover:text-yellow-300 transition-colors font-black"
+            >
+              🪔 Culture Books
+            </button>
+            <button
+              onClick={() => {
+                setCatalogTab('custom');
+                document.getElementById('order')?.scrollIntoView({ behavior: 'smooth' });
+              }}
+              className="hover:text-yellow-300 transition-colors"
+            >
+              Personalised Stories
+            </button>
+            <a href="#sample-video" className="hover:text-yellow-300 transition-colors">
+              Sample Video
+            </a>
+          </nav>
 
           <div className="flex items-center gap-2">
             <a
@@ -421,68 +534,180 @@ export default function App() {
               <span>Har bacche ke liye 100% Unique Kahaani</span>
             </div>
 
-            <h1 className="text-3xl sm:text-5xl font-black leading-[1.05] tracking-tight">
-              Aapke bacche ke naam aur aadat par bani{' '}
-              <span className="text-[#286dd7]">
-                kahaani & video!
-              </span>
-            </h1>
-
-            <p className="text-base sm:text-lg font-bold text-slate-800 leading-relaxed">
-              Personalised social story books (PDFs & Deluxe Print) aur animated video stories jo bacche ko
-              school, sharing, tantrums aur good habits sikhayein—unhe hero banakar.
-            </p>
-
-            {/* Quick Hero Offer Card */}
-            <div className="neo-box bg-[#f9d54a] p-4 sm:p-5 mt-4">
-              <div className="flex items-center justify-between gap-2">
-                <div>
-                  <span className="text-xs font-black uppercase tracking-wider text-slate-800 block">
-                    Most Popular Choice
-                  </span>
-                  <h3 className="text-xl sm:text-2xl font-black">5 Custom Books Combo PDF</h3>
-                </div>
-                <span className="bg-[#24252b] text-white text-[11px] font-black px-2.5 py-1 rounded-full whitespace-nowrap">
-                  BEST VALUE
+            {/* Catalog Selector Segmented Control */}
+            <div className="p-1.5 bg-[#24252b] rounded-xl flex items-center gap-1.5 shadow-[3px_3px_0_rgba(0,0,0,0.2)]">
+              <button
+                type="button"
+                onClick={() => {
+                  setCatalogTab('culture');
+                  setSelectedPackageId('culture-maa-durga-pdf');
+                }}
+                className={`flex-1 py-2 px-3 text-xs sm:text-sm font-black rounded-lg transition-all flex items-center justify-center gap-1.5 ${
+                  catalogTab === 'culture'
+                    ? 'bg-[#f9d54a] text-[#24252b] shadow-sm'
+                    : 'text-white/80 hover:text-white hover:bg-white/10'
+                }`}
+              >
+                <span>🪔 Indian Culture & Festivals</span>
+                <span className="text-[10px] bg-rose-600 text-white px-1.5 py-0.2 rounded font-black">
+                  NEW
                 </span>
-              </div>
-
-              <div className="mt-2 flex items-baseline gap-2">
-                <span className="text-3xl sm:text-4xl font-black text-[#24252b]">₹699</span>
-                <span className="text-base font-bold text-slate-600 line-through">₹1,000</span>
-                <span className="text-xs font-black bg-emerald-100 text-emerald-800 border border-[#24252b] px-2 py-0.5 rounded">
-                  Save ₹301
-                </span>
-              </div>
-
-              <div className="mt-4 grid grid-cols-2 gap-2 text-xs font-bold text-slate-800">
-                <div className="flex items-center gap-1.5">
-                  <CheckCircle2 className="w-4 h-4 text-emerald-700 shrink-0" />
-                  <span>5 Different Situations</span>
-                </div>
-                <div className="flex items-center gap-1.5">
-                  <CheckCircle2 className="w-4 h-4 text-emerald-700 shrink-0" />
-                  <span>WhatsApp Delivery in 1–2 Days</span>
-                </div>
-              </div>
-
-              <div className="mt-4 flex flex-col sm:flex-row gap-2">
-                <a
-                  href="#order"
-                  className="neo-btn bg-[#286dd7] text-white py-3 px-5 text-center text-sm font-black flex items-center justify-center gap-2 flex-1"
-                >
-                  <span>Order Shuru Karein</span>
-                  <span>↓</span>
-                </a>
-                <a
-                  href="#sample-video"
-                  className="neo-btn bg-white text-[#24252b] py-3 px-4 text-center text-sm font-black flex items-center justify-center gap-2"
-                >
-                  <Play className="w-4 h-4 fill-current text-rose-500" />
-                  <span>Watch Video</span>
-                </a>
-              </div>
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  setCatalogTab('custom');
+                  setSelectedPackageId('pdf-combo');
+                }}
+                className={`flex-1 py-2 px-3 text-xs sm:text-sm font-black rounded-lg transition-all flex items-center justify-center gap-1.5 ${
+                  catalogTab === 'custom'
+                    ? 'bg-[#f9d54a] text-[#24252b] shadow-sm'
+                    : 'text-white/80 hover:text-white hover:bg-white/10'
+                }`}
+              >
+                <span>✨ Personalised Stories</span>
+              </button>
             </div>
+
+            {catalogTab === 'culture' ? (
+              <>
+                <h1 className="text-3xl sm:text-5xl font-black leading-[1.05] tracking-tight">
+                  Indian Culture & Festivals made{' '}
+                  <span className="text-[#286dd7]">
+                    easy & joyful for kids!
+                  </span>
+                </h1>
+
+                <p className="text-base sm:text-lg font-bold text-slate-800 leading-relaxed">
+                  Ready-to-read learning books authored by <strong>Neha Thakur</strong>. Simple sight-word sentences,
+                  radiant divine illustrations, and loving values for young minds.
+                </p>
+
+                {/* Culture Hero Offer Card */}
+                <div className="neo-box bg-[#f9d54a] p-4 sm:p-5 mt-4">
+                  <div className="flex items-center justify-between gap-2">
+                    <div>
+                      <span className="text-xs font-black uppercase tracking-wider text-slate-800 block">
+                        Flagship Early Reader Title
+                      </span>
+                      <h3 className="text-xl sm:text-2xl font-black">My Loving Maa Durga</h3>
+                    </div>
+                    <span className="bg-rose-600 text-white text-[11px] font-black px-2.5 py-1 rounded-full whitespace-nowrap">
+                      READY NOW
+                    </span>
+                  </div>
+
+                  <div className="mt-2 flex items-baseline gap-2">
+                    <span className="text-3xl sm:text-4xl font-black text-[#24252b]">₹149</span>
+                    <span className="text-base font-bold text-slate-600 line-through">₹249</span>
+                    <span className="text-xs font-black bg-emerald-100 text-emerald-800 border border-[#24252b] px-2 py-0.5 rounded">
+                      Instant WhatsApp PDF
+                    </span>
+                    <span className="text-xs font-bold text-slate-700">· Hardcover: ₹899</span>
+                  </div>
+
+                  <div className="mt-4 grid grid-cols-2 gap-2 text-xs font-bold text-slate-800">
+                    <div className="flex items-center gap-1.5">
+                      <CheckCircle2 className="w-4 h-4 text-emerald-700 shrink-0" />
+                      <span>10 Illustrated Pages + Navadurga</span>
+                    </div>
+                    <div className="flex items-center gap-1.5">
+                      <CheckCircle2 className="w-4 h-4 text-emerald-700 shrink-0" />
+                      <span>Easy Sight Words (Ages 2–7)</span>
+                    </div>
+                  </div>
+
+                  <div className="mt-4 flex flex-col sm:flex-row gap-2">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        const durgaBook = CULTURE_BOOKS.find(b => b.id === 'maa-durga');
+                        if (durgaBook) setSelectedReaderBook(durgaBook);
+                      }}
+                      className="neo-btn bg-[#286dd7] text-white py-3 px-5 text-center text-sm font-black flex items-center justify-center gap-2 flex-1"
+                    >
+                      <BookOpen className="w-4 h-4" />
+                      <span>Flip & Read Sample Book</span>
+                      <span>📖</span>
+                    </button>
+                    <a
+                      href="#order"
+                      onClick={() => setSelectedPackageId('culture-maa-durga-pdf')}
+                      className="neo-btn bg-white text-[#24252b] py-3 px-4 text-center text-sm font-black flex items-center justify-center gap-1.5"
+                    >
+                      <span>Order Book (₹149)</span>
+                      <span>↓</span>
+                    </a>
+                  </div>
+                </div>
+              </>
+            ) : (
+              <>
+                <h1 className="text-3xl sm:text-5xl font-black leading-[1.05] tracking-tight">
+                  Aapke bacche ke naam aur aadat par bani{' '}
+                  <span className="text-[#286dd7]">
+                    kahaani & video!
+                  </span>
+                </h1>
+
+                <p className="text-base sm:text-lg font-bold text-slate-800 leading-relaxed">
+                  Personalised social story books (PDFs & Deluxe Print) aur animated video stories jo bacche ko
+                  school, sharing, tantrums aur good habits sikhayein—unhe hero banakar.
+                </p>
+
+                {/* Custom Story Hero Offer Card */}
+                <div className="neo-box bg-[#f9d54a] p-4 sm:p-5 mt-4">
+                  <div className="flex items-center justify-between gap-2">
+                    <div>
+                      <span className="text-xs font-black uppercase tracking-wider text-slate-800 block">
+                        Most Popular Choice
+                      </span>
+                      <h3 className="text-xl sm:text-2xl font-black">5 Custom Books Combo PDF</h3>
+                    </div>
+                    <span className="bg-[#24252b] text-white text-[11px] font-black px-2.5 py-1 rounded-full whitespace-nowrap">
+                      BEST VALUE
+                    </span>
+                  </div>
+
+                  <div className="mt-2 flex items-baseline gap-2">
+                    <span className="text-3xl sm:text-4xl font-black text-[#24252b]">₹699</span>
+                    <span className="text-base font-bold text-slate-600 line-through">₹1,000</span>
+                    <span className="text-xs font-black bg-emerald-100 text-emerald-800 border border-[#24252b] px-2 py-0.5 rounded">
+                      Save ₹301
+                    </span>
+                  </div>
+
+                  <div className="mt-4 grid grid-cols-2 gap-2 text-xs font-bold text-slate-800">
+                    <div className="flex items-center gap-1.5">
+                      <CheckCircle2 className="w-4 h-4 text-emerald-700 shrink-0" />
+                      <span>5 Different Situations</span>
+                    </div>
+                    <div className="flex items-center gap-1.5">
+                      <CheckCircle2 className="w-4 h-4 text-emerald-700 shrink-0" />
+                      <span>WhatsApp Delivery in 1–2 Days</span>
+                    </div>
+                  </div>
+
+                  <div className="mt-4 flex flex-col sm:flex-row gap-2">
+                    <a
+                      href="#order"
+                      onClick={() => setSelectedPackageId('pdf-combo')}
+                      className="neo-btn bg-[#286dd7] text-white py-3 px-5 text-center text-sm font-black flex items-center justify-center gap-2 flex-1"
+                    >
+                      <span>Order Shuru Karein</span>
+                      <span>↓</span>
+                    </a>
+                    <a
+                      href="#sample-video"
+                      className="neo-btn bg-white text-[#24252b] py-3 px-4 text-center text-sm font-black flex items-center justify-center gap-2"
+                    >
+                      <Play className="w-4 h-4 fill-current text-rose-500" />
+                      <span>Watch Video</span>
+                    </a>
+                  </div>
+                </div>
+              </>
+            )}
           </div>
 
           {/* Right Column: Upgraded Touch-Responsive Storybook Carousel */}
@@ -780,6 +1005,157 @@ export default function App() {
         </div>
       </section>
 
+      {/* Dedicated Indian Culture & Festivals Books Showcase */}
+      <section id="culture-books" className="py-14 px-4 border-b-2 border-[#24252b] bg-[#fffaf0]">
+        <div className="max-w-5xl mx-auto">
+          <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-8">
+            <div>
+              <div className="inline-flex items-center gap-1.5 bg-rose-100 border border-[#24252b] px-3 py-1 rounded-full text-xs font-black uppercase text-rose-800 mb-2">
+                <span>🪔 Author: Neha Thakur · LittleMindZ</span>
+              </div>
+              <h2 className="text-2xl sm:text-4xl font-black text-[#24252b]">
+                Indian Culture & Festival Learning Books
+              </h2>
+              <p className="text-sm sm:text-base font-bold text-slate-700 mt-1 max-w-2xl">
+                Ready-to-read books created to introduce toddlers to Indian traditions with pure love, gentle morals, and early reading phonics.
+              </p>
+            </div>
+
+            <div className="flex items-center gap-2">
+              <span className="text-xs font-extrabold text-slate-600 bg-white px-3 py-1.5 rounded-lg border border-slate-300">
+                ⭐ Rated 4.9/5 by Indian Parents
+              </span>
+            </div>
+          </div>
+
+          {/* Culture Books Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {CULTURE_BOOKS.map(book => {
+              const isFlagship = book.id === 'maa-durga';
+              return (
+                <div
+                  key={book.id}
+                  className={`neo-box p-4 sm:p-5 flex flex-col justify-between transition-transform ${
+                    isFlagship
+                      ? 'bg-gradient-to-b from-[#fff2d6] to-[#ffe2bc] border-3 border-[#24252b] shadow-[6px_6px_0_#24252b]'
+                      : 'bg-white border-2 border-[#24252b]'
+                  }`}
+                >
+                  <div>
+                    {/* Book Cover Container */}
+                    <div className="relative aspect-[3/4] rounded-lg overflow-hidden border-2 border-[#24252b] shadow-[3px_3px_0_#24252b] mb-4 bg-slate-100">
+                      <img
+                        src={book.coverImage}
+                        alt={`${book.title} book cover`}
+                        referrerPolicy="no-referrer"
+                        className="w-full h-full object-cover"
+                      />
+                      {book.badge && (
+                        <div className="absolute top-2 left-2 bg-[#24252b] text-white text-[10px] font-black px-2 py-0.5 rounded shadow">
+                          {book.badge}
+                        </div>
+                      )}
+                      <div className="absolute bottom-2 right-2 bg-white/90 backdrop-blur-xs text-[#24252b] text-[10px] font-black px-2 py-0.5 rounded border border-[#24252b]">
+                        {book.recommendedAge}
+                      </div>
+                    </div>
+
+                    <div className="space-y-1">
+                      <span className="text-[11px] font-bold text-slate-500 uppercase tracking-wide">
+                        By {book.author}
+                      </span>
+                      <h3 className="text-xl font-black text-[#24252b] leading-snug">
+                        {book.title}
+                      </h3>
+                      <p className="text-xs font-bold text-slate-700 line-clamp-2">
+                        {book.tagline}
+                      </p>
+                    </div>
+
+                    {/* Skill tags */}
+                    <div className="mt-3 flex flex-wrap gap-1">
+                      {book.skillsFocus.slice(0, 2).map((skill, idx) => (
+                        <span
+                          key={idx}
+                          className="text-[10px] font-bold bg-white/80 border border-black/15 text-slate-800 px-2 py-0.5 rounded"
+                        >
+                          ✓ {skill}
+                        </span>
+                      ))}
+                    </div>
+
+                    {/* Pricing Pill */}
+                    <div className="mt-4 pt-3 border-t border-black/10 flex items-baseline justify-between">
+                      <div>
+                        <span className="text-xs text-slate-600 block font-semibold">Instant PDF:</span>
+                        <div className="flex items-baseline gap-1.5">
+                          <span className="text-xl font-black text-[#24252b]">₹{book.pdfPrice}</span>
+                          <span className="text-xs text-slate-500 line-through">₹{book.pdfOriginalPrice}</span>
+                        </div>
+                      </div>
+                      <div className="text-right">
+                        <span className="text-xs text-slate-600 block font-semibold">Hardcover:</span>
+                        <span className="text-base font-black text-[#286dd7]">₹{book.printPrice}</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Actions */}
+                  <div className="mt-5 space-y-2">
+                    {book.isAvailableNow ? (
+                      <>
+                        <button
+                          type="button"
+                          onClick={() => setSelectedReaderBook(book)}
+                          className="neo-btn bg-[#286dd7] text-white py-2.5 px-3 text-xs font-black w-full flex items-center justify-center gap-1.5"
+                        >
+                          <BookOpen className="w-4 h-4" />
+                          <span>Flipbook: Read Sample Pages</span>
+                        </button>
+                        <div className="grid grid-cols-2 gap-2">
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setSelectedPackageId('culture-maa-durga-pdf');
+                              document.getElementById('order')?.scrollIntoView({ behavior: 'smooth' });
+                            }}
+                            className="neo-btn bg-[#f9d54a] text-[#24252b] py-2 px-2 text-[11px] font-black text-center"
+                          >
+                            Order PDF (₹149)
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setSelectedPackageId('culture-maa-durga-hardcover');
+                              document.getElementById('order')?.scrollIntoView({ behavior: 'smooth' });
+                            }}
+                            className="neo-btn bg-white text-[#24252b] py-2 px-2 text-[11px] font-black text-center"
+                          >
+                            Hardcover (₹899)
+                          </button>
+                        </div>
+                      </>
+                    ) : (
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setSelectedPackageId('culture-all-festivals-pass');
+                          document.getElementById('order')?.scrollIntoView({ behavior: 'smooth' });
+                        }}
+                        className="neo-btn bg-slate-100 hover:bg-[#f9d54a] text-[#24252b] py-2.5 px-3 text-xs font-black w-full flex items-center justify-center gap-1.5"
+                      >
+                        <Sparkles className="w-3.5 h-3.5 text-amber-600" />
+                        <span>Pre-Order Festival Pass (₹299)</span>
+                      </button>
+                    )}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      </section>
+
       {/* Offerings Showcase: PDF, Print & Video */}
       <section className="py-12 px-4 border-b-2 border-[#24252b] bg-white">
         <div className="max-w-5xl mx-auto">
@@ -901,15 +1277,49 @@ export default function App() {
           <form onSubmit={handleOrderSubmit} className="space-y-6">
             {/* Step 1: Package Selection */}
             <div className="neo-box bg-white p-5">
-              <label className="text-sm font-black text-[#24252b] flex items-center gap-2 mb-3">
-                <span className="w-6 h-6 rounded-full bg-[#f9d54a] border-2 border-[#24252b] flex items-center justify-center text-xs">
-                  1
-                </span>
-                <span>Choose Offering / Package:</span>
-              </label>
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
+                <label className="text-sm font-black text-[#24252b] flex items-center gap-2">
+                  <span className="w-6 h-6 rounded-full bg-[#f9d54a] border-2 border-[#24252b] flex items-center justify-center text-xs">
+                    1
+                  </span>
+                  <span>Choose Offering / Package:</span>
+                </label>
+
+                {/* Filter Selector in Order Form */}
+                <div className="inline-flex p-1 bg-slate-100 rounded-lg border border-slate-300">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setCatalogTab('culture');
+                      setSelectedPackageId('culture-maa-durga-pdf');
+                    }}
+                    className={`px-3 py-1 text-xs font-bold rounded-md transition-all ${
+                      catalogTab === 'culture'
+                        ? 'bg-[#286dd7] text-white shadow-xs'
+                        : 'text-slate-700 hover:text-black'
+                    }`}
+                  >
+                    🪔 Indian Culture Books
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setCatalogTab('custom');
+                      setSelectedPackageId('pdf-combo');
+                    }}
+                    className={`px-3 py-1 text-xs font-bold rounded-md transition-all ${
+                      catalogTab === 'custom'
+                        ? 'bg-[#286dd7] text-white shadow-xs'
+                        : 'text-slate-700 hover:text-black'
+                    }`}
+                  >
+                    ✨ Personalised Stories
+                  </button>
+                </div>
+              </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                {PACKAGES.map(pkg => {
+                {PACKAGES.filter(p => p.catalogType === catalogTab).map(pkg => {
                   const isSelected = selectedPackageId === pkg.id;
                   return (
                     <label
@@ -952,7 +1362,7 @@ export default function App() {
                           <span className="text-xs text-slate-600 line-through">₹{pkg.originalPrice}</span>
                         </div>
                         <span className="text-[11px] font-extrabold text-[#24252b] bg-black/5 px-2 py-0.5 rounded border border-black/10">
-                          ⚡ {pkg.deliveryTime.split(' ')[0]} days
+                          ⚡ {pkg.deliveryTime.split(' ')[0]} {pkg.deliveryTime.includes('Instant') ? '' : 'days'}
                         </span>
                       </div>
                     </label>
@@ -961,91 +1371,112 @@ export default function App() {
               </div>
             </div>
 
-            {/* Step 2: Child Details */}
+            {/* Step 2: Details */}
             <div className="neo-box bg-white p-5 space-y-4">
               <label className="text-sm font-black text-[#24252b] flex items-center gap-2">
                 <span className="w-6 h-6 rounded-full bg-[#bce3ef] border-2 border-[#24252b] flex items-center justify-center text-xs">
                   2
                 </span>
-                <span>Bacche ki Details:</span>
+                <span>{isCultureOrder ? 'Delivery & Recipient Details:' : 'Bacche ki Details:'}</span>
               </label>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div>
-                  <label htmlFor="childName" className="block text-xs font-bold text-slate-700 mb-1">
-                    Bacche Ka Naam *
-                  </label>
-                  <input
-                    id="childName"
-                    type="text"
-                    value={childName}
-                    onChange={e => setChildName(e.target.value)}
-                    placeholder="Jaise Aarav ya Siya"
-                    className={`w-full px-3 py-2.5 border-2 rounded-md font-bold text-sm bg-white focus:outline-none focus:ring-2 focus:ring-[#286dd7] ${
-                      errors.childName ? 'border-rose-600 bg-rose-50' : 'border-[#24252b]'
-                    }`}
-                  />
-                  {errors.childName && (
-                    <p className="text-xs font-bold text-rose-600 mt-1 flex items-center gap-1">
-                      <AlertCircle className="w-3 h-3" />
-                      <span>{errors.childName}</span>
-                    </p>
-                  )}
-                </div>
-
-                <div>
-                  <label htmlFor="childAge" className="block text-xs font-bold text-slate-700 mb-1">
-                    Bacche Ki Age *
-                  </label>
-                  <select
-                    id="childAge"
-                    value={childAge}
-                    onChange={e => setChildAge(e.target.value)}
-                    className={`w-full px-3 py-2.5 border-2 rounded-md font-bold text-sm bg-white focus:outline-none focus:ring-2 focus:ring-[#286dd7] ${
-                      errors.childAge ? 'border-rose-600 bg-rose-50' : 'border-[#24252b]'
-                    }`}
-                  >
-                    <option value="">Age select karein</option>
-                    <option value="1-2 years">1–2 years (Toddler / First Words)</option>
-                    <option value="2-3 years">2–3 years (Preschool / Potty / Sharing)</option>
-                    <option value="3-4 years">3–4 years (School Prep / Big Emotions)</option>
-                    <option value="4-5 years">4–5 years (Confidence / Sibling Love)</option>
-                    <option value="5-6 years">5–6 years (Friendship / Focus)</option>
-                    <option value="6-8 years">6–8 years (Reading / Responsibility)</option>
-                  </select>
-                  {errors.childAge && (
-                    <p className="text-xs font-bold text-rose-600 mt-1 flex items-center gap-1">
-                      <AlertCircle className="w-3 h-3" />
-                      <span>{errors.childAge}</span>
-                    </p>
-                  )}
-                </div>
-              </div>
-
-              <div>
-                <label htmlFor="situations" className="block text-xs font-bold text-slate-700 mb-1">
-                  Daily Situations ya Habits jisme help chahiye *
-                </label>
-                <textarea
-                  id="situations"
-                  rows={3}
-                  value={situations}
-                  onChange={e => setSituations(e.target.value)}
-                  placeholder="Jaise: School jaane par rota hai, toys share nahi karta, gusse mein cheekhta hai, veggies nahi khata..."
-                  className={`w-full px-3 py-2.5 border-2 rounded-md font-bold text-sm bg-white focus:outline-none focus:ring-2 focus:ring-[#286dd7] ${
-                    errors.situations ? 'border-rose-600 bg-rose-50' : 'border-[#24252b]'
-                  }`}
-                />
-                <p className="text-[11px] font-semibold text-slate-500 mt-0.5">
-                  Isi aadat ke hisaab se Neha story likhein gi taaki baccha easily connect kare.
-                </p>
-                {errors.situations && (
-                  <p className="text-xs font-bold text-rose-600 mt-1 flex items-center gap-1">
-                    <AlertCircle className="w-3 h-3" />
-                    <span>{errors.situations}</span>
+              {isCultureOrder ? (
+                <div className="p-3.5 bg-amber-50 border-2 border-amber-300 rounded-lg space-y-2">
+                  <div className="flex items-center gap-2">
+                    <BookOpen className="w-5 h-5 text-amber-700 shrink-0" />
+                    <div>
+                      <h4 className="font-black text-sm text-amber-950">
+                        Selected: {selectedPackage.name}
+                      </h4>
+                      <p className="text-xs font-semibold text-amber-900">
+                        {selectedPackage.bookTitle} · Written by Neha Thakur
+                      </p>
+                    </div>
+                  </div>
+                  <p className="text-xs text-amber-800">
+                    Yeh ready learning book hai. Koi custom name ya situation bharna zaroori nahi hai!
                   </p>
-                )}
-              </div>
+                </div>
+              ) : (
+                <>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                      <label htmlFor="childName" className="block text-xs font-bold text-slate-700 mb-1">
+                        Bacche Ka Naam *
+                      </label>
+                      <input
+                        id="childName"
+                        type="text"
+                        value={childName}
+                        onChange={e => setChildName(e.target.value)}
+                        placeholder="Jaise Aarav ya Siya"
+                        className={`w-full px-3 py-2.5 border-2 rounded-md font-bold text-sm bg-white focus:outline-none focus:ring-2 focus:ring-[#286dd7] ${
+                          errors.childName ? 'border-rose-600 bg-rose-50' : 'border-[#24252b]'
+                        }`}
+                      />
+                      {errors.childName && (
+                        <p className="text-xs font-bold text-rose-600 mt-1 flex items-center gap-1">
+                          <AlertCircle className="w-3 h-3" />
+                          <span>{errors.childName}</span>
+                        </p>
+                      )}
+                    </div>
+
+                    <div>
+                      <label htmlFor="childAge" className="block text-xs font-bold text-slate-700 mb-1">
+                        Bacche Ki Age *
+                      </label>
+                      <select
+                        id="childAge"
+                        value={childAge}
+                        onChange={e => setChildAge(e.target.value)}
+                        className={`w-full px-3 py-2.5 border-2 rounded-md font-bold text-sm bg-white focus:outline-none focus:ring-2 focus:ring-[#286dd7] ${
+                          errors.childAge ? 'border-rose-600 bg-rose-50' : 'border-[#24252b]'
+                        }`}
+                      >
+                        <option value="">Age select karein</option>
+                        <option value="1-2 years">1–2 years (Toddler / First Words)</option>
+                        <option value="2-3 years">2–3 years (Preschool / Potty / Sharing)</option>
+                        <option value="3-4 years">3–4 years (School Prep / Big Emotions)</option>
+                        <option value="4-5 years">4–5 years (Confidence / Sibling Love)</option>
+                        <option value="5-6 years">5–6 years (Friendship / Focus)</option>
+                        <option value="6-8 years">6–8 years (Reading / Responsibility)</option>
+                      </select>
+                      {errors.childAge && (
+                        <p className="text-xs font-bold text-rose-600 mt-1 flex items-center gap-1">
+                          <AlertCircle className="w-3 h-3" />
+                          <span>{errors.childAge}</span>
+                        </p>
+                      )}
+                    </div>
+                  </div>
+
+                  <div>
+                    <label htmlFor="situations" className="block text-xs font-bold text-slate-700 mb-1">
+                      Daily Situations ya Habits jisme help chahiye *
+                    </label>
+                    <textarea
+                      id="situations"
+                      rows={3}
+                      value={situations}
+                      onChange={e => setSituations(e.target.value)}
+                      placeholder="Jaise: School jaane par rota hai, toys share nahi karta, gusse mein cheekhta hai, veggies nahi khata..."
+                      className={`w-full px-3 py-2.5 border-2 rounded-md font-bold text-sm bg-white focus:outline-none focus:ring-2 focus:ring-[#286dd7] ${
+                        errors.situations ? 'border-rose-600 bg-rose-50' : 'border-[#24252b]'
+                      }`}
+                    />
+                    <p className="text-[11px] font-semibold text-slate-500 mt-0.5">
+                      Isi aadat ke hisaab se Neha story likhein gi taaki baccha easily connect kare.
+                    </p>
+                    {errors.situations && (
+                      <p className="text-xs font-bold text-rose-600 mt-1 flex items-center gap-1">
+                        <AlertCircle className="w-3 h-3" />
+                        <span>{errors.situations}</span>
+                      </p>
+                    )}
+                  </div>
+                </>
+              )}
 
               {/* Physical Print Address (conditional) */}
               {isPhysicalPrint && (
@@ -1299,6 +1730,27 @@ export default function App() {
           </div>
         </div>
       </footer>
+
+      {/* Interactive Culture Book Flipbook Reader */}
+      {selectedReaderBook && (
+        <CultureBookReader
+          book={selectedReaderBook}
+          isOpen={!!selectedReaderBook}
+          onClose={() => setSelectedReaderBook(null)}
+          onOrderBook={(book, format) => {
+            setSelectedReaderBook(null);
+            setCatalogTab('culture');
+            if (format === 'pdf') {
+              setSelectedPackageId('culture-maa-durga-pdf');
+            } else {
+              setSelectedPackageId('culture-maa-durga-hardcover');
+            }
+            setTimeout(() => {
+              document.getElementById('order')?.scrollIntoView({ behavior: 'smooth' });
+            }, 100);
+          }}
+        />
+      )}
     </div>
   );
 }

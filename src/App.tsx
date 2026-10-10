@@ -597,16 +597,55 @@ export default function App() {
                     </span>
                   </div>
 
-                  <div className="mt-2 flex items-baseline gap-2">
-                    <span className="text-3xl sm:text-4xl font-black text-[#24252b]">₹149</span>
-                    <span className="text-base font-bold text-slate-600 line-through">₹249</span>
-                    <span className="text-xs font-black bg-emerald-100 text-emerald-800 border border-[#24252b] px-2 py-0.5 rounded">
-                      Instant WhatsApp PDF
+                  {/* Interactive Format Toggle & Pricing Buttons */}
+                  <div className="mt-3 p-2 bg-white/70 rounded-xl border-2 border-[#24252b] space-y-2">
+                    <span className="text-[11px] font-black uppercase text-slate-700 block tracking-wider">
+                      Select Format:
                     </span>
-                    <span className="text-xs font-bold text-slate-700">· Hardcover: ₹899</span>
+                    <div className="grid grid-cols-2 gap-2">
+                      {/* PDF Option Button */}
+                      <button
+                        type="button"
+                        onClick={() => setSelectedPackageId('culture-maa-durga-pdf')}
+                        className={`p-2.5 rounded-lg border-2 text-left transition-all flex flex-col justify-between ${
+                          selectedPackageId === 'culture-maa-durga-pdf'
+                            ? 'border-[#24252b] bg-[#bce3ef] shadow-[2px_2px_0_#24252b]'
+                            : 'border-slate-300 bg-white hover:border-slate-400'
+                        }`}
+                      >
+                        <div className="flex items-center justify-between">
+                          <span className="text-xs font-black text-[#24252b]">Instant PDF</span>
+                          <span className="text-[9px] font-black bg-emerald-600 text-white px-1.5 py-0.2 rounded">WhatsApp</span>
+                        </div>
+                        <div className="flex items-baseline gap-1.5 mt-1">
+                          <span className="text-lg font-black text-[#24252b]">₹149</span>
+                          <span className="text-xs line-through text-slate-500">₹249</span>
+                        </div>
+                      </button>
+
+                      {/* Hardcover Option Button */}
+                      <button
+                        type="button"
+                        onClick={() => setSelectedPackageId('culture-maa-durga-hardcover')}
+                        className={`p-2.5 rounded-lg border-2 text-left transition-all flex flex-col justify-between ${
+                          selectedPackageId === 'culture-maa-durga-hardcover'
+                            ? 'border-[#24252b] bg-[#f5cbd0] shadow-[2px_2px_0_#24252b]'
+                            : 'border-slate-300 bg-white hover:border-slate-400'
+                        }`}
+                      >
+                        <div className="flex items-center justify-between">
+                          <span className="text-xs font-black text-[#24252b]">Printed Hardcover</span>
+                          <span className="text-[9px] font-black bg-[#286dd7] text-white px-1.5 py-0.2 rounded">Free Ship</span>
+                        </div>
+                        <div className="flex items-baseline gap-1.5 mt-1">
+                          <span className="text-lg font-black text-[#24252b]">₹899</span>
+                          <span className="text-xs line-through text-slate-500">₹1,299</span>
+                        </div>
+                      </button>
+                    </div>
                   </div>
 
-                  <div className="mt-4 grid grid-cols-2 gap-2 text-xs font-bold text-slate-800">
+                  <div className="mt-3 grid grid-cols-2 gap-2 text-xs font-bold text-slate-800">
                     <div className="flex items-center gap-1.5">
                       <CheckCircle2 className="w-4 h-4 text-emerald-700 shrink-0" />
                       <span>10 Illustrated Pages + Navadurga</span>
@@ -632,10 +671,11 @@ export default function App() {
                     </button>
                     <a
                       href="#order"
-                      onClick={() => setSelectedPackageId('culture-maa-durga-pdf')}
                       className="neo-btn bg-white text-[#24252b] py-3 px-4 text-center text-sm font-black flex items-center justify-center gap-1.5"
                     >
-                      <span>Order Book (₹149)</span>
+                      <span>
+                        Order {selectedPackageId === 'culture-maa-durga-hardcover' ? 'Hardcover (₹899)' : 'PDF (₹149)'}
+                      </span>
                       <span>↓</span>
                     </a>
                   </div>

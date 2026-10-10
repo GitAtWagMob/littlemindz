@@ -67,3 +67,32 @@
   -ms-overflow-style: none;
   scrollbar-width: none;
 }
+
+/* 3D Flippable Book Styles */
+.book-perspective {
+  perspective: 1600px;
+}
+
+.book-shadow {
+  box-shadow: 0 15px 35px -5px rgba(0, 0, 0, 0.45), 0 0 0 3px #24252b;
+}
+
+.book-spine {
+  background: linear-gradient(to right, rgba(0,0,0,0.3) 0%, rgba(255,255,255,0.15) 30%, rgba(0,0,0,0.2) 70%, rgba(0,0,0,0.5) 100%);
+}
+
+.book-page-turning {
+  transform-style: preserve-3d;
+  transition: transform 0.65s cubic-bezier(0.645, 0.045, 0.355, 1);
+  transform-origin: left center;
+}
+
+.book-page-back {
+  transform: rotateY(180deg);
+  backface-visibility: hidden;
+}
+
+.book-page-front {
+  backface-visibility: hidden;
+}
+

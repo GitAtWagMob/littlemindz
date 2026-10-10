@@ -3,6 +3,7 @@ export interface CultureBookPage {
   title: string;
   theme: string;
   illustrationType: 'cover' | 'maa_lion' | 'lion_close' | 'maa_girl' | 'nine_forms' | 'blessing' | 'hug' | 'animals' | 'nature' | 'puja' | 'thanks';
+  pageImage?: string;
   lines: { text: string; highlightWord?: string }[];
   narration: string;
 }
@@ -55,6 +56,7 @@ export const CULTURE_BOOKS: CultureBook[] = [
         title: 'My Maa Durga',
         theme: 'Love & Kindness',
         illustrationType: 'maa_lion',
+        pageImage: '/src/assets/images/durga_page1_lion_1791655355848.jpg',
         lines: [
           { text: 'This is Maa Durga.' },
           { text: 'She is ', highlightWord: 'kind.' },
@@ -69,6 +71,7 @@ export const CULTURE_BOOKS: CultureBook[] = [
         title: 'Maa Has a Lion',
         theme: 'Strength & Protection',
         illustrationType: 'lion_close',
+        pageImage: '/src/assets/images/durga_page2_lion_big_1791655366306.jpg',
         lines: [
           { text: 'This is a ', highlightWord: 'lion.' },
           { text: 'The lion is ', highlightWord: 'big.' },
@@ -83,6 +86,7 @@ export const CULTURE_BOOKS: CultureBook[] = [
         title: 'Maa Helps Me',
         theme: 'Caring & Safety',
         illustrationType: 'maa_girl',
+        pageImage: '/src/assets/images/durga_page3_helps_me_1791655379186.jpg',
         lines: [
           { text: 'Maa can ', highlightWord: 'help.' },
           { text: 'Maa can ', highlightWord: 'care.' },
@@ -97,6 +101,7 @@ export const CULTURE_BOOKS: CultureBook[] = [
         title: 'Nine Forms of Maa Durga',
         theme: 'Navadurga for Early Learners',
         illustrationType: 'nine_forms',
+        pageImage: '/src/assets/images/durga_nine_forms_page_1791651721778.jpg',
         lines: [
           { text: '1. Shailputri: She sits on a ', highlightWord: 'bull.' },
           { text: '2. Brahmacharini: She has a ', highlightWord: 'mala.' },

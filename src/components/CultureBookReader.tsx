@@ -11,7 +11,8 @@ import {
   Heart,
   Maximize2,
   Minimize2,
-  Bookmark
+  Bookmark,
+  ExternalLink
 } from 'lucide-react';
 import { CultureBook, CultureBookPage } from '../data/cultureBooks';
 
@@ -417,15 +418,16 @@ export const CultureBookReader: React.FC<CultureBookReaderProps> = ({
             )}
 
             {/* Quick Purchase Strip Inside Reader */}
-            <div className="pt-3 border-t-2 border-slate-200 flex items-center justify-between gap-2 mt-2">
+            <div className="pt-3 border-t-2 border-slate-200 flex flex-wrap items-center justify-between gap-2 mt-2">
               <span className="text-[11px] font-black text-slate-600">
                 Order full book:
               </span>
-              <div className="flex items-center gap-2">
+              <div className="flex flex-wrap items-center gap-1.5">
                 <button
                   type="button"
                   onClick={() => onOrderBook(book, 'pdf')}
-                  className="neo-btn bg-[#286dd7] text-white py-1 px-2.5 text-[11px] font-black flex items-center gap-1"
+                  className="neo-btn bg-[#286dd7] text-white py-1 px-2 text-[11px] font-black flex items-center gap-1 cursor-pointer"
+                  title="Instant PDF on WhatsApp"
                 >
                   <ShoppingBag className="w-3 h-3" />
                   <span>PDF ₹{book.pdfPrice}</span>
@@ -433,11 +435,22 @@ export const CultureBookReader: React.FC<CultureBookReaderProps> = ({
                 <button
                   type="button"
                   onClick={() => onOrderBook(book, 'hardcover')}
-                  className="neo-btn bg-[#f9d54a] text-[#24252b] py-1 px-2.5 text-[11px] font-black flex items-center gap-1"
+                  className="neo-btn bg-[#f9d54a] text-[#24252b] py-1 px-2 text-[11px] font-black flex items-center gap-1 cursor-pointer"
+                  title="Deluxe Hardcover delivered to home"
                 >
                   <ShoppingBag className="w-3 h-3 text-amber-800" />
                   <span>Hardcover ₹{book.printPrice}</span>
                 </button>
+                <a
+                  href={book.amazonUrl || "https://www.amazon.in/storefront?me=A3TSASKOI3KWD9&ref_=ssf_share"}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="neo-btn bg-[#ff9900] text-[#24252b] py-1 px-2 text-[11px] font-black flex items-center gap-1 cursor-pointer hover:bg-[#ffad33]"
+                  title="Buy on Amazon Official Storefront"
+                >
+                  <ExternalLink className="w-3 h-3" />
+                  <span>Amazon 🛍️</span>
+                </a>
               </div>
             </div>
           </div>

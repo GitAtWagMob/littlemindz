@@ -10,7 +10,7 @@ import mirrorImg from './assets/images/storybook_magic_mirror_1790441787973.jpg'
 import calmImg from './assets/images/storybook_calming_steps_1790441800866.jpg';
 import printImg from './assets/images/printed_book_showcase_1790441813451.jpg';
 import { CultureBookReader } from './components/CultureBookReader';
-import { CULTURE_BOOKS, CultureBook } from './data/cultureBooks';
+import { CULTURE_BOOKS, CultureBook, AMAZON_STOREFRONT_URL } from './data/cultureBooks';
 import {
   BookOpen,
   Sparkles,
@@ -115,23 +115,41 @@ const STORY_SLIDES: StorySlide[] = [
 ];
 
 const PACKAGES: PackageOption[] = [
-  // --- Indian Culture & Festivals Series (Ready Books) ---
+  // --- Indian Culture & Devotion Series (Ready Published Books) ---
+  {
+    id: 'culture-all-5-bundle-pdf',
+    catalogType: 'culture',
+    category: 'combo',
+    name: 'Complete 5-Book Devotional PDF Pack',
+    bookTitle: 'All 5 Books (Durga + Krishna + Hanuman + Shiva + Ganesha)',
+    badge: 'BEST VALUE · 50% OFF',
+    price: 499,
+    originalPrice: 1245,
+    popular: true,
+    deliverable: 'All 5 High-Resolution Digital Early Reader PDFs on WhatsApp',
+    deliveryTime: 'Instant on WhatsApp',
+    features: [
+      'Includes all 5 Books by Author Neha Thakur',
+      'My First Maa Durga + Krishna + Hanuman + Shiva + Ganesha',
+      '55+ early reading lesson pages with phonics & sight words',
+      'Instant download to read on phone, iPad & laptop'
+    ]
+  },
   {
     id: 'culture-maa-durga-pdf',
     catalogType: 'culture',
     category: 'pdf',
-    name: 'My Loving Maa Durga (PDF)',
-    bookTitle: 'My Loving Maa Durga',
-    badge: 'FESTIVAL SPECIAL',
+    name: 'My First Maa Durga (PDF)',
+    bookTitle: 'My First Maa Durga Reading Book',
+    badge: 'READY NOW · BESTSELLER',
     price: 149,
     originalPrice: 249,
-    popular: true,
     deliverable: '1 High-Resolution Digital Book PDF on WhatsApp',
     deliveryTime: 'Instant on WhatsApp',
     features: [
       'Authored by Neha Thakur for LittleMindZ',
       'Simple early reader sentences + sight words',
-      'Full 10 illustrated pages + Nine Forms of Durga',
+      'Full 11 illustrated pages + Nine Forms of Durga & Sacred Symbols',
       'Instant download to read on phone, iPad & laptop'
     ]
   },
@@ -139,36 +157,162 @@ const PACKAGES: PackageOption[] = [
     id: 'culture-maa-durga-hardcover',
     catalogType: 'culture',
     category: 'print',
-    name: 'My Loving Maa Durga (Deluxe Hardcover)',
-    bookTitle: 'My Loving Maa Durga',
+    name: 'My First Maa Durga (Deluxe Hardcover)',
+    bookTitle: 'My First Maa Durga Reading Book',
     badge: 'DELUXE KEEPSAKE',
     price: 899,
     originalPrice: 1299,
-    deliverable: 'Physical Hardbound Book Delivered Across India',
-    deliveryTime: '4–6 Days (Free Courier Delivery)',
+    deliverable: 'Physical Hardbound Book Delivered Across India (Also on Amazon)',
+    deliveryTime: '4–6 Days (Free Courier Delivery / Amazon Prime)',
     features: [
       'Premium hardbound glossy cover with gold highlights',
       'Tear-resistant, toddler-safe thick photo paper',
-      'Personal blessing note from Author Neha Thakur',
+      'Available also on Amazon Storefront with fast shipping',
       'Free courier shipping with tracking across India'
     ]
   },
   {
-    id: 'culture-all-festivals-pass',
+    id: 'culture-krishna-pdf',
     catalogType: 'culture',
-    category: 'combo',
-    name: 'Indian Festivals Digital Collector Pack',
-    bookTitle: 'Complete Culture Series',
-    badge: 'BEST VALUE PACK',
-    price: 299,
-    originalPrice: 599,
-    deliverable: '3 Festival Learning PDFs (Durga + Ganesha + Diwali)',
+    category: 'pdf',
+    name: 'My First Krishna (PDF)',
+    bookTitle: 'My First Krishna Reading Book',
+    badge: 'READY NOW · POPULAR',
+    price: 149,
+    originalPrice: 249,
+    deliverable: '1 High-Resolution Digital Book PDF on WhatsApp',
     deliveryTime: 'Instant on WhatsApp',
     features: [
-      'Includes "My Loving Maa Durga" (Instant)',
-      'Pre-order pass for "My Sweet Bal Ganesha" PDF',
-      'Pre-order pass for "The Joyful Lights of Diwali" PDF',
-      'Delivered straight to your WhatsApp as each releases'
+      'Authored by Neha Thakur for LittleMindZ',
+      'Toddler Krishna, flute tunes, playful cows & butter sharing',
+      'Full 11 illustrated pages + Radha & Krishna lesson',
+      'Instant download to read on phone, iPad & laptop'
+    ]
+  },
+  {
+    id: 'culture-krishna-hardcover',
+    catalogType: 'culture',
+    category: 'print',
+    name: 'My First Krishna (Deluxe Hardcover)',
+    bookTitle: 'My First Krishna Reading Book',
+    badge: 'DELUXE KEEPSAKE',
+    price: 899,
+    originalPrice: 1299,
+    deliverable: 'Physical Hardbound Book Delivered Across India (Also on Amazon)',
+    deliveryTime: '4–6 Days (Free Courier Delivery / Amazon Prime)',
+    features: [
+      'Premium hardbound keepsake with glossy vibrant illustrations',
+      'Tear-resistant, toddler-safe thick photo paper',
+      'Available also on Amazon Storefront with fast shipping',
+      'Free courier shipping with tracking across India'
+    ]
+  },
+  {
+    id: 'culture-hanuman-pdf',
+    catalogType: 'culture',
+    category: 'pdf',
+    name: 'My First Hanuman (PDF)',
+    bookTitle: 'My First Hanuman Reading Book',
+    badge: 'READY NOW · FAVORITE',
+    price: 149,
+    originalPrice: 249,
+    deliverable: '1 High-Resolution Digital Book PDF on WhatsApp',
+    deliveryTime: 'Instant on WhatsApp',
+    features: [
+      'Authored by Neha Thakur for LittleMindZ',
+      'Little Hanuman, golden gada, courage, and love for parents',
+      'Full 11 illustrated pages of strength & kindness',
+      'Instant download to read on phone, iPad & laptop'
+    ]
+  },
+  {
+    id: 'culture-hanuman-hardcover',
+    catalogType: 'culture',
+    category: 'print',
+    name: 'My First Hanuman (Deluxe Hardcover)',
+    bookTitle: 'My First Hanuman Reading Book',
+    badge: 'DELUXE KEEPSAKE',
+    price: 899,
+    originalPrice: 1299,
+    deliverable: 'Physical Hardbound Book Delivered Across India (Also on Amazon)',
+    deliveryTime: '4–6 Days (Free Courier Delivery / Amazon Prime)',
+    features: [
+      'Premium hardbound keepsake with glossy vibrant illustrations',
+      'Tear-resistant, toddler-safe thick photo paper',
+      'Available also on Amazon Storefront with fast shipping',
+      'Free courier shipping with tracking across India'
+    ]
+  },
+  {
+    id: 'culture-shiva-pdf',
+    catalogType: 'culture',
+    category: 'pdf',
+    name: 'My First Shiva (PDF)',
+    bookTitle: 'My First Shiva Reading Book',
+    badge: 'READY NOW · DEVOTIONAL',
+    price: 149,
+    originalPrice: 249,
+    deliverable: '1 High-Resolution Digital Book PDF on WhatsApp',
+    deliveryTime: 'Instant on WhatsApp',
+    features: [
+      'Authored by Neha Thakur for LittleMindZ',
+      'Calming damru, Mount Kailash, Nandi, and loving family',
+      'Full 11 illustrated pages of mindfulness & nature care',
+      'Instant download to read on phone, iPad & laptop'
+    ]
+  },
+  {
+    id: 'culture-shiva-hardcover',
+    catalogType: 'culture',
+    category: 'print',
+    name: 'My First Shiva (Deluxe Hardcover)',
+    bookTitle: 'My First Shiva Reading Book',
+    badge: 'DELUXE KEEPSAKE',
+    price: 899,
+    originalPrice: 1299,
+    deliverable: 'Physical Hardbound Book Delivered Across India (Also on Amazon)',
+    deliveryTime: '4–6 Days (Free Courier Delivery / Amazon Prime)',
+    features: [
+      'Premium hardbound keepsake with glossy vibrant illustrations',
+      'Tear-resistant, toddler-safe thick photo paper',
+      'Available also on Amazon Storefront with fast shipping',
+      'Free courier shipping with tracking across India'
+    ]
+  },
+  {
+    id: 'culture-ganesha-pdf',
+    catalogType: 'culture',
+    category: 'pdf',
+    name: 'My First Ganesha (PDF)',
+    bookTitle: 'My First Ganesha Reading Book',
+    badge: 'READY NOW · BESTSELLER',
+    price: 149,
+    originalPrice: 249,
+    deliverable: '1 High-Resolution Digital Book PDF on WhatsApp',
+    deliveryTime: 'Instant on WhatsApp',
+    features: [
+      'Authored by Neha Thakur for LittleMindZ',
+      'Bal Ganesha, modak treats, Mushak mouse, and wisdom',
+      'Full 11 illustrated pages of clearing obstacles & learning',
+      'Instant download to read on phone, iPad & laptop'
+    ]
+  },
+  {
+    id: 'culture-ganesha-hardcover',
+    catalogType: 'culture',
+    category: 'print',
+    name: 'My First Ganesha (Deluxe Hardcover)',
+    bookTitle: 'My First Ganesha Reading Book',
+    badge: 'DELUXE KEEPSAKE',
+    price: 899,
+    originalPrice: 1299,
+    deliverable: 'Physical Hardbound Book Delivered Across India (Also on Amazon)',
+    deliveryTime: '4–6 Days (Free Courier Delivery / Amazon Prime)',
+    features: [
+      'Premium hardbound keepsake with glossy vibrant illustrations',
+      'Tear-resistant, toddler-safe thick photo paper',
+      'Available also on Amazon Storefront with fast shipping',
+      'Free courier shipping with tracking across India'
     ]
   },
 
@@ -469,6 +613,25 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-[#fffdf7] text-[#24252b] selection:bg-[#f9d54a] selection:text-[#24252b]">
+      {/* Top Global Amazon Storefront Announcement Bar */}
+      <div className="bg-[#131921] text-white px-3 py-2 text-center text-xs font-bold border-b border-[#24252b] flex items-center justify-center gap-2 flex-wrap">
+        <span className="bg-[#ff9900] text-[#131921] px-2 py-0.5 rounded text-[10px] font-black uppercase tracking-wider">
+          Now On Amazon India
+        </span>
+        <span>
+          Neha Thakur&apos;s 5 Devotion &amp; Culture Learning Books are live on <strong>Amazon India</strong>!
+        </span>
+        <a
+          href={AMAZON_STOREFRONT_URL}
+          target="_blank"
+          rel="noreferrer"
+          className="inline-flex items-center gap-1 text-[#ff9900] hover:underline font-black ml-1"
+        >
+          <span>Shop Storefront</span>
+          <ExternalLink className="w-3.5 h-3.5" />
+        </a>
+      </div>
+
       {/* Top Brand Bar */}
       <header className="sticky top-0 z-40 bg-[#286dd7] border-b-2 border-[#24252b] px-4 py-3 shadow-[0_3px_0_#24252b]">
         <div className="max-w-5xl mx-auto flex items-center justify-between">
@@ -507,6 +670,15 @@ export default function App() {
             </button>
             <a href="#sample-video" className="hover:text-yellow-300 transition-colors">
               Sample Video
+            </a>
+            <a
+              href={AMAZON_STOREFRONT_URL}
+              target="_blank"
+              rel="noreferrer"
+              className="inline-flex items-center gap-1 text-[#ff9900] hover:text-white font-black transition-colors"
+            >
+              <span>Amazon Store</span>
+              <ExternalLink className="w-3 h-3" />
             </a>
           </nav>
 
@@ -663,10 +835,10 @@ export default function App() {
                         const durgaBook = CULTURE_BOOKS.find(b => b.id === 'maa-durga');
                         if (durgaBook) setSelectedReaderBook(durgaBook);
                       }}
-                      className="neo-btn bg-[#286dd7] text-white py-3 px-5 text-center text-sm font-black flex items-center justify-center gap-2 flex-1"
+                      className="neo-btn bg-[#286dd7] text-white py-3 px-4 text-center text-sm font-black flex items-center justify-center gap-2 flex-1"
                     >
                       <BookOpen className="w-4 h-4" />
-                      <span>Flip & Read Sample Book</span>
+                      <span>Flip Sample Book</span>
                       <span>📖</span>
                     </button>
                     <a
@@ -677,6 +849,15 @@ export default function App() {
                         Order {selectedPackageId === 'culture-maa-durga-hardcover' ? 'Hardcover (₹899)' : 'PDF (₹149)'}
                       </span>
                       <span>↓</span>
+                    </a>
+                    <a
+                      href={AMAZON_STOREFRONT_URL}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="neo-btn bg-[#ff9900] hover:bg-[#ffad33] text-[#131921] py-3 px-4 text-center text-sm font-black flex items-center justify-center gap-1.5"
+                    >
+                      <span>Amazon Store 🛍️</span>
+                      <ExternalLink className="w-3.5 h-3.5" />
                     </a>
                   </div>
                 </div>
@@ -1068,8 +1249,32 @@ export default function App() {
             </div>
           </div>
 
+          {/* Amazon Storefront Highlight Banner */}
+          <div className="neo-box bg-[#131921] text-white p-5 sm:p-6 mb-8 flex flex-col md:flex-row items-center justify-between gap-5 border-3 border-[#24252b] shadow-[5px_5px_0_#24252b]">
+            <div className="space-y-1.5 text-center md:text-left">
+              <div className="inline-flex items-center gap-1.5 bg-[#ff9900] text-[#131921] text-[10px] font-black px-2.5 py-0.5 rounded uppercase tracking-wider">
+                <span>Official Amazon India Store</span>
+              </div>
+              <h3 className="text-xl sm:text-2xl font-black text-white">
+                All 5 Devotion &amp; Early Reader Books Available on Amazon!
+              </h3>
+              <p className="text-xs sm:text-sm text-slate-300 font-bold max-w-2xl">
+                Prefer Amazon Prime fast shipping, hassle-free doorstep delivery, and verified customer reviews? Visit our official author storefront.
+              </p>
+            </div>
+            <a
+              href={AMAZON_STOREFRONT_URL}
+              target="_blank"
+              rel="noreferrer"
+              className="neo-btn bg-[#ff9900] text-[#131921] py-3 px-6 text-sm font-black flex items-center justify-center gap-2 shrink-0 hover:bg-[#ffad33] shadow-[3px_3px_0_#ffffff] transition-colors"
+            >
+              <ExternalLink className="w-4 h-4" />
+              <span>Visit Amazon Storefront</span>
+            </a>
+          </div>
+
           {/* Culture Books Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {CULTURE_BOOKS.map(book => {
               const isFlagship = book.id === 'maa-durga';
               return (
@@ -1142,52 +1347,45 @@ export default function App() {
 
                   {/* Actions */}
                   <div className="mt-5 space-y-2">
-                    {book.isAvailableNow ? (
-                      <>
-                        <button
-                          type="button"
-                          onClick={() => setSelectedReaderBook(book)}
-                          className="neo-btn bg-[#286dd7] text-white py-2.5 px-3 text-xs font-black w-full flex items-center justify-center gap-1.5"
-                        >
-                          <BookOpen className="w-4 h-4" />
-                          <span>Flipbook: Read Sample Pages</span>
-                        </button>
-                        <div className="grid grid-cols-2 gap-2">
-                          <button
-                            type="button"
-                            onClick={() => {
-                              setSelectedPackageId('culture-maa-durga-pdf');
-                              document.getElementById('order')?.scrollIntoView({ behavior: 'smooth' });
-                            }}
-                            className="neo-btn bg-[#f9d54a] text-[#24252b] py-2 px-2 text-[11px] font-black text-center"
-                          >
-                            Order PDF (₹149)
-                          </button>
-                          <button
-                            type="button"
-                            onClick={() => {
-                              setSelectedPackageId('culture-maa-durga-hardcover');
-                              document.getElementById('order')?.scrollIntoView({ behavior: 'smooth' });
-                            }}
-                            className="neo-btn bg-white text-[#24252b] py-2 px-2 text-[11px] font-black text-center"
-                          >
-                            Hardcover (₹899)
-                          </button>
-                        </div>
-                      </>
-                    ) : (
+                    <button
+                      type="button"
+                      onClick={() => setSelectedReaderBook(book)}
+                      className="neo-btn bg-[#286dd7] text-white py-2.5 px-3 text-xs font-black w-full flex items-center justify-center gap-1.5"
+                    >
+                      <BookOpen className="w-4 h-4" />
+                      <span>Flipbook: Read Sample Pages</span>
+                    </button>
+                    <div className="grid grid-cols-2 gap-2">
                       <button
                         type="button"
                         onClick={() => {
-                          setSelectedPackageId('culture-all-festivals-pass');
+                          setSelectedPackageId(book.packageIdPdf);
                           document.getElementById('order')?.scrollIntoView({ behavior: 'smooth' });
                         }}
-                        className="neo-btn bg-slate-100 hover:bg-[#f9d54a] text-[#24252b] py-2.5 px-3 text-xs font-black w-full flex items-center justify-center gap-1.5"
+                        className="neo-btn bg-[#f9d54a] text-[#24252b] py-2 px-2 text-[11px] font-black text-center"
                       >
-                        <Sparkles className="w-3.5 h-3.5 text-amber-600" />
-                        <span>Pre-Order Festival Pass (₹299)</span>
+                        Order PDF (₹{book.pdfPrice})
                       </button>
-                    )}
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setSelectedPackageId(book.packageIdHardcover);
+                          document.getElementById('order')?.scrollIntoView({ behavior: 'smooth' });
+                        }}
+                        className="neo-btn bg-white text-[#24252b] py-2 px-2 text-[11px] font-black text-center"
+                      >
+                        Hardcover (₹{book.printPrice})
+                      </button>
+                    </div>
+                    <a
+                      href={book.amazonUrl || AMAZON_STOREFRONT_URL}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="neo-btn bg-[#ff9900] hover:bg-[#ffad33] text-[#131921] py-2 px-3 text-xs font-black w-full flex items-center justify-center gap-1.5"
+                    >
+                      <span>Buy on Amazon India 🛍️</span>
+                      <ExternalLink className="w-3.5 h-3.5" />
+                    </a>
                   </div>
                 </div>
               );
@@ -1740,16 +1938,28 @@ export default function App() {
           <div className="text-center md:text-left">
             <h3 className="text-xl font-black text-[#f9d54a]">LittleMindZ</h3>
             <p className="text-xs font-bold text-slate-300 mt-1 max-w-sm">
-              Custom social stories, print keepsakes, and animated video stories created lovingly for little minds.
+              Custom social stories, print keepsakes, and early reader devotion books created lovingly for little minds.
             </p>
-            <a
-              href="https://instagram.com/faithfamilylife_nehathakur"
-              target="_blank"
-              rel="noreferrer"
-              className="text-xs font-bold text-sky-300 hover:underline mt-2 inline-block"
-            >
-              Instagram: @faithfamilylife_nehathakur
-            </a>
+            <div className="flex flex-wrap items-center justify-center md:justify-start gap-4 mt-3">
+              <a
+                href="https://instagram.com/faithfamilylife_nehathakur"
+                target="_blank"
+                rel="noreferrer"
+                className="text-xs font-bold text-sky-300 hover:underline inline-block"
+              >
+                Instagram: @faithfamilylife_nehathakur
+              </a>
+              <span className="text-slate-600">·</span>
+              <a
+                href={AMAZON_STOREFRONT_URL}
+                target="_blank"
+                rel="noreferrer"
+                className="text-xs font-black text-[#ff9900] hover:underline inline-flex items-center gap-1"
+              >
+                <span>Amazon India Storefront</span>
+                <ExternalLink className="w-3 h-3" />
+              </a>
+            </div>
           </div>
 
           <div className="text-center md:text-right">
@@ -1780,11 +1990,11 @@ export default function App() {
           onOrderBook={(book, format) => {
             setSelectedReaderBook(null);
             setCatalogTab('culture');
-            if (format === 'pdf') {
-              setSelectedPackageId('culture-maa-durga-pdf');
-            } else {
-              setSelectedPackageId('culture-maa-durga-hardcover');
-            }
+            setSelectedPackageId(
+              format === 'pdf'
+                ? (book.packageIdPdf || 'culture-maa-durga-pdf')
+                : (book.packageIdHardcover || 'culture-maa-durga-hardcover')
+            );
             setTimeout(() => {
               document.getElementById('order')?.scrollIntoView({ behavior: 'smooth' });
             }, 100);

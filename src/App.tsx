@@ -160,8 +160,8 @@ const PACKAGES: PackageOption[] = [
     name: 'My First Maa Durga (Deluxe Hardcover)',
     bookTitle: 'My First Maa Durga Reading Book',
     badge: 'DELUXE KEEPSAKE',
-    price: 899,
-    originalPrice: 1299,
+    price: 249,
+    originalPrice: 399,
     deliverable: 'Physical Hardbound Book Delivered Across India (Also on Amazon)',
     deliveryTime: '4–6 Days (Free Courier Delivery / Amazon Prime)',
     features: [
@@ -196,8 +196,8 @@ const PACKAGES: PackageOption[] = [
     name: 'My First Krishna (Deluxe Hardcover)',
     bookTitle: 'My First Krishna Reading Book',
     badge: 'DELUXE KEEPSAKE',
-    price: 899,
-    originalPrice: 1299,
+    price: 299,
+    originalPrice: 499,
     deliverable: 'Physical Hardbound Book Delivered Across India (Also on Amazon)',
     deliveryTime: '4–6 Days (Free Courier Delivery / Amazon Prime)',
     features: [
@@ -232,8 +232,8 @@ const PACKAGES: PackageOption[] = [
     name: 'My First Hanuman (Deluxe Hardcover)',
     bookTitle: 'My First Hanuman Reading Book',
     badge: 'DELUXE KEEPSAKE',
-    price: 899,
-    originalPrice: 1299,
+    price: 249,
+    originalPrice: 399,
     deliverable: 'Physical Hardbound Book Delivered Across India (Also on Amazon)',
     deliveryTime: '4–6 Days (Free Courier Delivery / Amazon Prime)',
     features: [
@@ -268,8 +268,8 @@ const PACKAGES: PackageOption[] = [
     name: 'My First Shiva (Deluxe Hardcover)',
     bookTitle: 'My First Shiva Reading Book',
     badge: 'DELUXE KEEPSAKE',
-    price: 899,
-    originalPrice: 1299,
+    price: 249,
+    originalPrice: 399,
     deliverable: 'Physical Hardbound Book Delivered Across India (Also on Amazon)',
     deliveryTime: '4–6 Days (Free Courier Delivery / Amazon Prime)',
     features: [
@@ -304,8 +304,8 @@ const PACKAGES: PackageOption[] = [
     name: 'My First Ganesha (Deluxe Hardcover)',
     bookTitle: 'My First Ganesha Reading Book',
     badge: 'DELUXE KEEPSAKE',
-    price: 899,
-    originalPrice: 1299,
+    price: 249,
+    originalPrice: 399,
     deliverable: 'Physical Hardbound Book Delivered Across India (Also on Amazon)',
     deliveryTime: '4–6 Days (Free Courier Delivery / Amazon Prime)',
     features: [
@@ -810,8 +810,8 @@ export default function App() {
                           <span className="text-[9px] font-black bg-[#286dd7] text-white px-1.5 py-0.2 rounded">Free Ship</span>
                         </div>
                         <div className="flex items-baseline gap-1.5 mt-1">
-                          <span className="text-lg font-black text-[#24252b]">₹899</span>
-                          <span className="text-xs line-through text-slate-500">₹1,299</span>
+                          <span className="text-lg font-black text-[#24252b]">₹249</span>
+                          <span className="text-xs line-through text-slate-500">₹399</span>
                         </div>
                       </button>
                     </div>
@@ -846,7 +846,7 @@ export default function App() {
                       className="neo-btn bg-white text-[#24252b] py-3 px-4 text-center text-sm font-black flex items-center justify-center gap-1.5"
                     >
                       <span>
-                        Order {selectedPackageId === 'culture-maa-durga-hardcover' ? 'Hardcover (₹899)' : 'PDF (₹149)'}
+                        Order {selectedPackageId === 'culture-maa-durga-hardcover' ? 'Hardcover (₹249)' : 'PDF (₹149)'}
                       </span>
                       <span>↓</span>
                     </a>

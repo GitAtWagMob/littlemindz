@@ -8,10 +8,6 @@ import {
   BookOpen,
   Sparkles,
   ShoppingBag,
-  Heart,
-  Maximize2,
-  Minimize2,
-  Bookmark,
   ExternalLink
 } from 'lucide-react';
 import { CultureBook, CultureBookPage } from '../data/cultureBooks';
@@ -29,17 +25,26 @@ export const CultureBookReader: React.FC<CultureBookReaderProps> = ({
   onClose,
   onOrderBook
 }) => {
-  // 0: Cover (Page 0)
-  // 1..totalPages: Lesson pages
+  // 0: Cover
+  // 1..totalPages: Sample lesson pages (1 to 4)
+  // totalPages + 1: End of sample preview card
   const [currentPageIndex, setCurrentPageIndex] = useState<number>(0);
   const [isFlipping, setIsFlipping] = useState<boolean>(false);
   const [flipDirection, setFlipDirection] = useState<'next' | 'prev'>('next');
   const [isReadingAloud, setIsReadingAloud] = useState<boolean>(false);
-  const [activeSpeechWord, setActiveSpeechWord] = useState<string>('');
-  const [isFullscreen, setIsFullscreen] = useState<boolean>(false);
   const [imageLoadErrors, setImageLoadErrors] = useState<Record<number, boolean>>({});
 
-  const totalPages = (book.pages?.length || 0); // 10 pages
+  const samplePagesCount = book.pages?.length || 4;
+  const maxSlideIndex = samplePagesCount + 1; // last slide is preview completion card
+
+  // Reset page index when opened or book changed
+  useEffect(() => {
+    if (isOpen) {
+      setCurrentPageIndex(0);
+      setIsFlipping(false);
+      setImageLoadErrors({});
+    }
+  }, [isOpen, book.id]);
 
   // Preload all book illustrations for instant, smooth page turns
   useEffect(() => {
@@ -70,7 +75,6 @@ export const CultureBookReader: React.FC<CultureBookReaderProps> = ({
       window.speechSynthesis.cancel();
     }
     setIsReadingAloud(false);
-    setActiveSpeechWord('');
   }, [currentPageIndex, isOpen]);
 
   // Keyboard navigation (Arrow keys)
@@ -95,21 +99,23 @@ export const CultureBookReader: React.FC<CultureBookReaderProps> = ({
 
   const handleToggleReadAloud = () => {
     if (!('speechSynthesis' in window)) {
-      alert('Speech synthesis is not supported on this browser.');
       return;
     }
 
     if (isReadingAloud) {
       window.speechSynthesis.cancel();
       setIsReadingAloud(false);
-      setActiveSpeechWord('');
       return;
     }
 
-    const currentText =
-      currentPageIndex === 0
-        ? `${book.title}. By author ${book.author}. An early learning book for kids. Tap next or swipe to flip the page!`
-        : book.pages[currentPageIndex - 1]?.narration || '';
+    let currentText = '';
+    if (currentPageIndex === 0) {
+      currentText = `${book.title}. Written by Neha Thakur. Sample flipbook preview for little minds. Swipe or tap next to turn the page!`;
+    } else if (currentPageIndex <= samplePagesCount) {
+      currentText = book.pages[currentPageIndex - 1]?.narration || '';
+    } else {
+      currentText = `Sample preview complete! Order the full 14 page book to enjoy all lessons and activities!`;
+    }
 
     if (!currentText) return;
 
@@ -126,21 +132,12 @@ export const CultureBookReader: React.FC<CultureBookReaderProps> = ({
     );
     if (friendlyVoice) utterance.voice = friendlyVoice;
 
-    utterance.onboundary = event => {
-      if (event.name === 'word') {
-        const spokenWord = currentText.substring(event.charIndex, event.charIndex + event.charLength);
-        setActiveSpeechWord(spokenWord.toLowerCase().replace(/[^a-z]/g, ''));
-      }
-    };
-
     utterance.onend = () => {
       setIsReadingAloud(false);
-      setActiveSpeechWord('');
     };
 
     utterance.onerror = () => {
       setIsReadingAloud(false);
-      setActiveSpeechWord('');
     };
 
     setIsReadingAloud(true);
@@ -148,13 +145,13 @@ export const CultureBookReader: React.FC<CultureBookReaderProps> = ({
   };
 
   const goToNext = () => {
-    if (currentPageIndex < totalPages && !isFlipping) {
+    if (currentPageIndex < maxSlideIndex && !isFlipping) {
       setIsFlipping(true);
       setFlipDirection('next');
       setTimeout(() => {
         setCurrentPageIndex(prev => prev + 1);
         setIsFlipping(false);
-      }, 550);
+      }, 350);
     }
   };
 
@@ -165,7 +162,7 @@ export const CultureBookReader: React.FC<CultureBookReaderProps> = ({
       setTimeout(() => {
         setCurrentPageIndex(prev => prev - 1);
         setIsFlipping(false);
-      }, 550);
+      }, 350);
     }
   };
 
@@ -180,10 +177,10 @@ export const CultureBookReader: React.FC<CultureBookReaderProps> = ({
   const handleTouchEnd = () => {
     if (!touchStartX.current || !touchEndX.current) return;
     const distance = touchStartX.current - touchEndX.current;
-    if (distance > 50) {
+    if (distance > 45) {
       // Swiped left -> Next page
       goToNext();
-    } else if (distance < -50) {
+    } else if (distance < -45) {
       // Swiped right -> Previous page
       goToPrev();
     }
@@ -194,55 +191,51 @@ export const CultureBookReader: React.FC<CultureBookReaderProps> = ({
   if (!isOpen) return null;
 
   const isCover = currentPageIndex === 0;
-  const currentPage: CultureBookPage | undefined = !isCover ? book.pages[currentPageIndex - 1] : undefined;
+  const isEndCard = currentPageIndex === maxSlideIndex;
+  const currentPage: CultureBookPage | undefined = !isCover && !isEndCard ? book.pages[currentPageIndex - 1] : undefined;
 
   // Image to render for current page
   const pageImageSrc = isCover
     ? book.coverImage
-    : currentPage?.pageImage || (currentPage?.illustrationType === 'nine_forms' ? book.spreadImage : book.coverImage) || book.coverImage;
+    : currentPage?.pageImage || book.coverImage;
 
   return (
     <div
       role="dialog"
       aria-modal="true"
-      className="fixed inset-0 z-50 bg-black/90 backdrop-blur-md flex flex-col items-center justify-between p-2 sm:p-4 overflow-y-auto pb-12 sm:pb-4"
+      className="fixed inset-0 z-50 bg-black/92 backdrop-blur-md flex flex-col items-center justify-between p-2 sm:p-4 select-none overflow-y-auto"
     >
       {/* Top Header Controls */}
-      <div className="w-full max-w-4xl bg-[#f9d54a] border-3 border-[#24252b] rounded-xl px-4 py-2.5 shadow-[4px_4px_0_#24252b] flex items-center justify-between shrink-0 mb-2 sm:mb-3">
-        <div className="flex items-center gap-2.5">
-          <span className="w-9 h-9 rounded-full bg-white border-2 border-[#24252b] flex items-center justify-center shadow-xs">
-            <BookOpen className="w-5 h-5 text-[#286dd7]" />
+      <div className="w-full max-w-xl bg-[#f9d54a] border-3 border-[#24252b] rounded-xl px-3 sm:px-4 py-2 shadow-[4px_4px_0_#24252b] flex items-center justify-between shrink-0 mb-2">
+        <div className="flex items-center gap-2 min-w-0">
+          <span className="w-8 h-8 rounded-full bg-white border-2 border-[#24252b] flex items-center justify-center shrink-0 shadow-xs">
+            <BookOpen className="w-4 h-4 text-[#286dd7]" />
           </span>
-          <div>
-            <h3 className="text-sm sm:text-base font-black text-[#24252b] leading-tight">
+          <div className="min-w-0">
+            <h3 className="text-xs sm:text-sm font-black text-[#24252b] truncate leading-tight">
               {book.title}
             </h3>
-            <p className="text-[11px] font-bold text-slate-700">
-              Author: {book.author} · {isCover ? 'Cover' : `Page ${currentPageIndex} of ${totalPages}`}
+            <p className="text-[10px] sm:text-[11px] font-bold text-slate-700">
+              {isCover
+                ? 'Cover Page · Tap to flip'
+                : isEndCard
+                ? 'Sample Preview Complete'
+                : `Sample Page ${currentPageIndex} of ${samplePagesCount}`}
             </p>
           </div>
         </div>
 
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-1.5 shrink-0">
           {/* Read Aloud Button */}
           <button
             onClick={handleToggleReadAloud}
-            className={`neo-btn py-1.5 px-3 text-xs font-black flex items-center gap-1.5 transition-colors cursor-pointer ${
+            className={`neo-btn py-1 px-2.5 text-[11px] font-black flex items-center gap-1 transition-colors cursor-pointer ${
               isReadingAloud ? 'bg-rose-500 text-white animate-pulse' : 'bg-white text-[#24252b]'
             }`}
             title="Read aloud with audio"
           >
-            {isReadingAloud ? <VolumeX className="w-4 h-4" /> : <Volume2 className="w-4 h-4 text-emerald-700" />}
-            <span className="hidden sm:inline">{isReadingAloud ? 'Stop' : 'Read Aloud'}</span>
-          </button>
-
-          {/* Fullscreen Toggle */}
-          <button
-            onClick={() => setIsFullscreen(!isFullscreen)}
-            className="neo-btn bg-white text-[#24252b] p-1.5 hidden sm:flex items-center justify-center cursor-pointer"
-            title={isFullscreen ? 'Exit Fullscreen' : 'Fullscreen'}
-          >
-            {isFullscreen ? <Minimize2 className="w-4 h-4" /> : <Maximize2 className="w-4 h-4" />}
+            {isReadingAloud ? <VolumeX className="w-3.5 h-3.5" /> : <Volume2 className="w-3.5 h-3.5 text-emerald-700" />}
+            <span className="hidden sm:inline">{isReadingAloud ? 'Stop' : 'Read'}</span>
           </button>
 
           {/* Close */}
@@ -251,278 +244,240 @@ export const CultureBookReader: React.FC<CultureBookReaderProps> = ({
             className="neo-btn bg-white text-[#24252b] p-1.5 cursor-pointer"
             title="Close Book"
           >
-            <X className="w-5 h-5" />
+            <X className="w-4 h-4" />
           </button>
         </div>
       </div>
 
-      {/* Main 3D Flippable Book Container */}
+      {/* Main Flippable Book Container */}
       <div
-        className={`w-full max-w-4xl flex-1 flex items-center justify-center p-1 sm:p-4 book-perspective select-none transition-all ${
-          isFullscreen ? 'max-w-5xl' : ''
-        }`}
+        className="w-full max-w-xl flex-1 flex items-center justify-center py-1 sm:py-2 book-perspective relative"
         onTouchStart={handleTouchStart}
         onTouchMove={handleTouchMove}
         onTouchEnd={handleTouchEnd}
       >
-        {/* The Realistic Book Structure */}
+        {/* Navigation Hotspot Arrow - Left */}
+        <button
+          type="button"
+          disabled={currentPageIndex === 0 || isFlipping}
+          onClick={goToPrev}
+          aria-label="Previous Page"
+          className="absolute left-1 sm:left-2 top-1/2 -translate-y-1/2 w-9 h-9 sm:w-11 sm:h-11 rounded-full bg-white/95 text-[#24252b] border-2 border-[#24252b] shadow-[2px_2px_0_#24252b] flex items-center justify-center hover:bg-[#f9d54a] disabled:opacity-0 disabled:pointer-events-none transition-all z-40 active:scale-95 cursor-pointer"
+        >
+          <ChevronLeft className="w-5 h-5 sm:w-6 sm:h-6" />
+        </button>
+
+        {/* The Realistic Book Page Structure */}
         <div
-          className={`relative w-full max-w-2xl sm:max-w-3xl min-h-[460px] sm:min-h-0 sm:aspect-[1.5/1] bg-white rounded-2xl border-4 border-[#24252b] book-shadow overflow-hidden flex flex-col sm:flex-row transition-all duration-300 ${
+          className={`relative w-full max-w-[420px] aspect-[1158/1638] max-h-[68vh] sm:max-h-[72vh] bg-white rounded-2xl border-4 border-[#24252b] book-shadow overflow-hidden transition-all duration-350 select-none ${
             isFlipping
               ? flipDirection === 'next'
-                ? 'scale-[0.98] -rotate-1'
-                : 'scale-[0.98] rotate-1'
-              : 'scale-100 rotate-0'
+                ? 'scale-[0.98] -rotate-1 opacity-90'
+                : 'scale-[0.98] rotate-1 opacity-90'
+              : 'scale-100 rotate-0 opacity-100'
           }`}
         >
-          {/* Subtle Book Spine / Fold in the Center for Desktop */}
-          <div className="hidden sm:block absolute inset-y-0 left-1/2 -translate-x-1/2 w-8 book-spine z-30 pointer-events-none opacity-40" />
+          {/* Subtle Spine on Left */}
+          {!isCover && (
+            <div className="absolute inset-y-0 left-0 w-4 sm:w-5 book-spine z-30 pointer-events-none opacity-30" />
+          )}
 
-          {/* Left Spread (Illustration / Cover on Desktop) */}
-          <div className="w-full sm:w-1/2 h-1/2 sm:h-full relative overflow-hidden bg-amber-50 border-b-2 sm:border-b-0 sm:border-r-2 border-[#24252b]">
-            {!imageLoadErrors[currentPageIndex] ? (
-              <img
-                src={pageImageSrc}
-                alt={isCover ? `${book.title} Cover` : currentPage?.title || 'Book Page Illustration'}
-                referrerPolicy="no-referrer"
-                loading="eager"
-                onError={() => {
-                  setImageLoadErrors(prev => ({ ...prev, [currentPageIndex]: true }));
-                }}
-                className="w-full h-full object-cover select-none"
-              />
-            ) : (
-              <div className="w-full h-full flex flex-col items-center justify-center p-6 bg-gradient-to-br from-amber-100 via-orange-50 to-yellow-100 text-center select-none">
-                <div className="w-14 h-14 rounded-full bg-[#f9d54a] border-3 border-[#24252b] shadow-[3px_3px_0_#24252b] flex items-center justify-center mb-2">
-                  <Sparkles className="w-7 h-7 text-amber-800" />
-                </div>
-                <span className="text-[11px] font-black uppercase tracking-wider text-amber-800">
-                  {isCover ? book.title : `Page ${currentPageIndex} · ${currentPage?.theme || 'Early Reader Story'}`}
-                </span>
-                <h4 className="text-lg sm:text-xl font-black text-[#24252b] mt-1 mb-1">
-                  {isCover ? 'Loving Stories for Young Hearts' : currentPage?.title}
-                </h4>
-                <div className="text-[11px] font-bold text-amber-900 bg-white/90 border border-amber-300 rounded-lg px-2.5 py-1 shadow-xs mt-1">
-                  🌸 Early Reader Phonics Lesson
-                </div>
-              </div>
-            )}
+          {/* Page Curl Shadow Effect on Top Right */}
+          <div className="absolute top-0 right-0 w-8 h-8 bg-gradient-to-bl from-black/20 via-white/40 to-transparent pointer-events-none z-20" />
 
-            {/* Realistic Page Corner Curl on Cover/Pages */}
-            <div className="absolute top-0 right-0 w-8 h-8 bg-gradient-to-bl from-black/25 via-white/50 to-transparent pointer-events-none" />
-
-            {/* Badge Indicator */}
-            <div className="absolute top-3 left-3 bg-[#f9d54a] border-2 border-[#24252b] rounded-full w-8 h-8 flex items-center justify-center font-black text-xs text-[#24252b] shadow-sm z-10">
-              {isCover ? '★' : currentPageIndex}
-            </div>
-
-            {/* Mobile Swipe Hint */}
-            <div className="absolute bottom-2 left-2 bg-black/75 text-white text-[10px] font-bold px-2.5 py-1 rounded-full pointer-events-none backdrop-blur-xs flex items-center gap-1 sm:hidden">
-              <span>Swipe ↔ to flip</span>
-            </div>
-          </div>
-
-          {/* Right Spread (Text Content & Reading Lesson on Desktop) */}
-          <div className="w-full sm:w-1/2 h-1/2 sm:h-full bg-[#fffdf7] p-4 sm:p-8 flex flex-col justify-between overflow-y-auto">
-            {isCover ? (
-              <div className="space-y-4 my-auto">
-                <div className="inline-flex items-center gap-1 bg-[#286dd7] text-white px-2.5 py-0.5 rounded text-[11px] font-black uppercase">
-                  <Bookmark className="w-3 h-3" />
-                  <span>Early Reader Learning Series</span>
+          {/* Slide Content */}
+          {isEndCard ? (
+            /* End of Sample Preview Card */
+            <div className="w-full h-full flex flex-col items-center justify-between p-5 sm:p-7 bg-gradient-to-b from-[#fffaf0] via-white to-amber-50 text-center select-none overflow-y-auto">
+              <div className="my-auto space-y-3">
+                <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-[#f9d54a] border-3 border-[#24252b] shadow-[3px_3px_0_#24252b] flex items-center justify-center mx-auto">
+                  <Sparkles className="w-7 h-7 sm:w-8 sm:h-8 text-amber-900 fill-amber-400" />
                 </div>
 
-                <h1 className="text-2xl sm:text-4xl font-black text-[#24252b] leading-tight">
-                  {book.title}
-                </h1>
-                <p className="text-xs sm:text-sm font-bold text-slate-700">
-                  {book.subtitle}
+                <div className="inline-block bg-amber-100 text-amber-900 text-[10px] sm:text-xs font-black uppercase px-2.5 py-0.5 rounded-full border border-amber-300">
+                  Sample Preview Complete
+                </div>
+
+                <h3 className="text-lg sm:text-2xl font-black text-[#24252b] leading-tight">
+                  Loved Reading {book.title}?
+                </h3>
+
+                <p className="text-xs sm:text-sm font-bold text-slate-700 max-w-xs mx-auto leading-relaxed">
+                  You just enjoyed <strong>{samplePagesCount} sample pages</strong>! Order the full <strong>14-page illustrated book</strong> to read all divine lessons, sacred symbols, phonics sight words, and activities.
                 </p>
 
-                <div className="p-3 bg-amber-50 border-2 border-amber-300 rounded-xl space-y-1 text-xs font-bold text-amber-950">
-                  <p className="font-black text-amber-900 flex items-center gap-1">
-                    <Sparkles className="w-3.5 h-3.5 text-amber-600" />
-                    <span>How this book teaches reading:</span>
-                  </p>
-                  <p>• Short, rhythmic sentences for young children.</p>
-                  <p>• <span className="text-rose-600 font-black">Red bold words</span> reinforce core sight words.</p>
-                  <p>• Beautiful loving values: kindness, courage, and prayer.</p>
+                <div className="space-y-2 pt-2 max-w-xs mx-auto">
+                  <button
+                    type="button"
+                    onClick={() => onOrderBook(book, 'hardcover')}
+                    className="neo-btn bg-[#f9d54a] hover:bg-[#ffe366] text-[#24252b] py-2.5 px-3 text-xs font-black w-full flex items-center justify-center gap-1.5 shadow-sm"
+                  >
+                    <ShoppingBag className="w-3.5 h-3.5 text-amber-900" />
+                    <span>Order Deluxe Hardcover (₹{book.printPrice})</span>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => onOrderBook(book, 'pdf')}
+                    className="neo-btn bg-[#286dd7] hover:bg-[#1f5ab8] text-white py-2.5 px-3 text-xs font-black w-full flex items-center justify-center gap-1.5 shadow-sm"
+                  >
+                    <ShoppingBag className="w-3.5 h-3.5" />
+                    <span>Order Instant PDF (₹{book.pdfPrice})</span>
+                  </button>
+
+                  <a
+                    href={book.amazonUrl || "https://www.amazon.in/storefront?me=A3TSASKOI3KWD9&ref_=ssf_share"}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="neo-btn bg-[#ff9900] hover:bg-[#ffad33] text-[#131921] py-2.5 px-3 text-xs font-black w-full flex items-center justify-center gap-1.5 shadow-sm"
+                  >
+                    <span>Buy on Amazon India 🛍️</span>
+                    <ExternalLink className="w-3.5 h-3.5" />
+                  </a>
                 </div>
 
                 <button
                   type="button"
-                  onClick={goToNext}
-                  className="neo-btn bg-[#f9d54a] text-[#24252b] py-3 px-5 text-sm font-black w-full flex items-center justify-center gap-2 mt-4"
+                  onClick={() => setCurrentPageIndex(0)}
+                  className="text-xs font-black text-[#286dd7] hover:underline block mx-auto pt-2"
                 >
-                  <span>Open & Flip to Page 1</span>
-                  <ChevronRight className="w-4 h-4" />
+                  ↺ Flip back to Cover
                 </button>
-              </div>
-            ) : (
-              <div className="space-y-4 my-auto">
-                {/* Page Header */}
-                <div className="flex items-center justify-between border-b-2 border-slate-200 pb-2">
-                  <span className="text-xs font-black uppercase text-[#286dd7]">
-                    Lesson {currentPageIndex} · {currentPage?.theme}
-                  </span>
-                  <span className="text-xs font-bold text-slate-500">
-                    Page {currentPageIndex} of {totalPages}
-                  </span>
-                </div>
-
-                {/* Lesson Title */}
-                <h2 className="text-xl sm:text-2xl font-black text-[#24252b] flex items-center gap-2">
-                  <span className="w-7 h-7 rounded-full bg-[#f9d54a] border-2 border-[#24252b] flex items-center justify-center text-xs shrink-0">
-                    {currentPageIndex}
-                  </span>
-                  <span>{currentPage?.title}</span>
-                </h2>
-
-                {/* Story Sentences with Sight-Word Highlight */}
-                <div className="space-y-3 py-2 bg-amber-50/50 p-4 rounded-xl border border-amber-200/80">
-                  {currentPage?.lines.map((line, idx) => {
-                    const isWordActive =
-                      line.highlightWord &&
-                      activeSpeechWord &&
-                      line.highlightWord.toLowerCase().includes(activeSpeechWord);
-
-                    return (
-                      <p
-                        key={idx}
-                        className="text-lg sm:text-2xl font-black text-[#24252b] leading-relaxed tracking-wide"
-                      >
-                        {line.text}
-                        {line.highlightWord && (
-                          <span
-                            className={`font-black ml-1.5 px-1.5 py-0.5 rounded transition-all duration-200 ${
-                              isWordActive
-                                ? 'bg-yellow-300 text-rose-700 underline shadow-xs'
-                                : 'text-rose-600'
-                            }`}
-                          >
-                            {line.highlightWord}
-                          </span>
-                        )}
-                      </p>
-                    );
-                  })}
-                </div>
-
-                {/* Friendly Parent Prompt */}
-                <div className="bg-emerald-50 border border-emerald-300 p-2.5 rounded-lg text-xs font-bold text-emerald-900 flex items-center gap-2">
-                  <Heart className="w-4 h-4 text-emerald-700 shrink-0" />
-                  <span>
-                    Ask child: &quot;Can you spot the red word on this page?&quot;
-                  </span>
-                </div>
-              </div>
-            )}
-
-            {/* Quick Purchase Strip Inside Reader */}
-            <div className="pt-3 border-t-2 border-slate-200 flex flex-wrap items-center justify-between gap-2 mt-2">
-              <span className="text-[11px] font-black text-slate-600">
-                Order full book:
-              </span>
-              <div className="flex flex-wrap items-center gap-1.5">
-                <button
-                  type="button"
-                  onClick={() => onOrderBook(book, 'pdf')}
-                  className="neo-btn bg-[#286dd7] text-white py-1 px-2 text-[11px] font-black flex items-center gap-1 cursor-pointer"
-                  title="Instant PDF on WhatsApp"
-                >
-                  <ShoppingBag className="w-3 h-3" />
-                  <span>PDF ₹{book.pdfPrice}</span>
-                </button>
-                <button
-                  type="button"
-                  onClick={() => onOrderBook(book, 'hardcover')}
-                  className="neo-btn bg-[#f9d54a] text-[#24252b] py-1 px-2 text-[11px] font-black flex items-center gap-1 cursor-pointer"
-                  title="Deluxe Hardcover delivered to home"
-                >
-                  <ShoppingBag className="w-3 h-3 text-amber-800" />
-                  <span>Hardcover ₹{book.printPrice}</span>
-                </button>
-                <a
-                  href={book.amazonUrl || "https://www.amazon.in/storefront?me=A3TSASKOI3KWD9&ref_=ssf_share"}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="neo-btn bg-[#ff9900] text-[#24252b] py-1 px-2 text-[11px] font-black flex items-center gap-1 cursor-pointer hover:bg-[#ffad33]"
-                  title="Buy on Amazon Official Storefront"
-                >
-                  <ExternalLink className="w-3 h-3" />
-                  <span>Amazon 🛍️</span>
-                </a>
               </div>
             </div>
-          </div>
+          ) : (
+            /* Illustrated Book Page */
+            <div className="w-full h-full relative overflow-hidden bg-amber-50">
+              {!imageLoadErrors[currentPageIndex] ? (
+                <img
+                  src={pageImageSrc}
+                  alt={isCover ? `${book.title} Cover` : `Sample Page ${currentPageIndex}`}
+                  referrerPolicy="no-referrer"
+                  loading="eager"
+                  onError={() => {
+                    setImageLoadErrors(prev => ({ ...prev, [currentPageIndex]: true }));
+                  }}
+                  className="w-full h-full object-cover select-none"
+                />
+              ) : (
+                <div className="w-full h-full flex flex-col items-center justify-center p-6 bg-gradient-to-br from-amber-100 via-orange-50 to-yellow-100 text-center select-none">
+                  <div className="w-12 h-12 rounded-full bg-[#f9d54a] border-3 border-[#24252b] shadow-[2px_2px_0_#24252b] flex items-center justify-center mb-2">
+                    <Sparkles className="w-6 h-6 text-amber-800" />
+                  </div>
+                  <h4 className="text-base font-black text-[#24252b]">
+                    {isCover ? book.title : `Page ${currentPageIndex}`}
+                  </h4>
+                </div>
+              )}
 
-          {/* Left Arrow Click Hotspot */}
-          <button
-            type="button"
-            disabled={currentPageIndex === 0 || isFlipping}
-            onClick={goToPrev}
-            aria-label="Previous Page"
-            className="absolute left-2 top-[24%] sm:top-1/2 -translate-y-1/2 w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-white/95 text-[#24252b] border-2 border-[#24252b] shadow-[2px_2px_0_#24252b] flex items-center justify-center hover:bg-[#f9d54a] disabled:opacity-0 disabled:pointer-events-none transition-all z-40 active:scale-95 cursor-pointer"
-          >
-            <ChevronLeft className="w-5 h-5 sm:w-6 sm:h-6" />
-          </button>
+              {/* Page Number Badge */}
+              <div className="absolute top-2.5 left-2.5 bg-[#f9d54a] border-2 border-[#24252b] rounded-full w-7 h-7 flex items-center justify-center font-black text-[11px] text-[#24252b] shadow-xs z-10">
+                {isCover ? '★' : currentPageIndex}
+              </div>
 
-          {/* Right Arrow Click Hotspot */}
-          <button
-            type="button"
-            disabled={currentPageIndex === totalPages || isFlipping}
-            onClick={goToNext}
-            aria-label="Next Page"
-            className="absolute right-2 top-[24%] sm:top-1/2 -translate-y-1/2 w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-white/95 text-[#24252b] border-2 border-[#24252b] shadow-[2px_2px_0_#24252b] flex items-center justify-center hover:bg-[#f9d54a] disabled:opacity-0 disabled:pointer-events-none transition-all z-40 active:scale-95 cursor-pointer"
-          >
-            <ChevronRight className="w-5 h-5 sm:w-6 sm:h-6" />
-          </button>
+              {/* Mobile Swipe Hint on Cover */}
+              {isCover && (
+                <div className="absolute bottom-3 left-1/2 -translate-x-1/2 bg-black/75 text-white text-[10px] font-bold px-3 py-1 rounded-full pointer-events-none backdrop-blur-xs flex items-center gap-1 z-10">
+                  <span>Swipe ↔ or tap next to read</span>
+                </div>
+              )}
+            </div>
+          )}
         </div>
+
+        {/* Navigation Hotspot Arrow - Right */}
+        <button
+          type="button"
+          disabled={currentPageIndex === maxSlideIndex || isFlipping}
+          onClick={goToNext}
+          aria-label="Next Page"
+          className="absolute right-1 sm:right-2 top-1/2 -translate-y-1/2 w-9 h-9 sm:w-11 sm:h-11 rounded-full bg-white/95 text-[#24252b] border-2 border-[#24252b] shadow-[2px_2px_0_#24252b] flex items-center justify-center hover:bg-[#f9d54a] disabled:opacity-0 disabled:pointer-events-none transition-all z-40 active:scale-95 cursor-pointer"
+        >
+          <ChevronRight className="w-5 h-5 sm:w-6 sm:h-6" />
+        </button>
       </div>
 
-      {/* Reader Bottom Bar: Page Slider & Controls */}
-      <div className="w-full max-w-4xl bg-white border-3 border-[#24252b] rounded-xl px-3 sm:px-4 py-2.5 sm:py-3 shadow-[4px_4px_0_#24252b] flex items-center justify-between shrink-0 mt-2 sm:mt-3 mb-2 sm:mb-0">
-        <button
-          onClick={goToPrev}
-          disabled={currentPageIndex === 0 || isFlipping}
-          className="neo-btn bg-slate-100 disabled:opacity-40 text-[#24252b] py-2 px-3 text-xs font-black flex items-center gap-1 cursor-pointer"
-        >
-          <ChevronLeft className="w-4 h-4" />
-          <span>Flip Back</span>
-        </button>
-
-        {/* Progress Dots with Page Tooltip */}
-        <div className="flex items-center gap-1.5 overflow-x-auto px-2 max-w-[180px] sm:max-w-md">
-          {Array.from({ length: totalPages + 1 }).map((_, index) => (
+      {/* Reader Bottom Bar: Quick Purchase & Page Controls */}
+      <div className="w-full max-w-xl space-y-2 shrink-0">
+        {/* Quick Purchase Strip */}
+        <div className="bg-[#131921] border-2 border-[#24252b] rounded-xl px-3 py-2 text-white flex flex-wrap items-center justify-between gap-2 shadow-[3px_3px_0_#24252b]">
+          <span className="text-[11px] font-black text-slate-300">
+            Order Full 14-Page Book:
+          </span>
+          <div className="flex items-center gap-1.5 flex-wrap">
             <button
-              key={index}
-              onClick={() => {
-                if (!isFlipping) {
-                  setIsFlipping(true);
-                  setFlipDirection(index > currentPageIndex ? 'next' : 'prev');
-                  setTimeout(() => {
-                    setCurrentPageIndex(index);
-                    setIsFlipping(false);
-                  }, 400);
-                }
-              }}
-              className={`h-2.5 rounded-full transition-all cursor-pointer ${
-                currentPageIndex === index
-                  ? 'w-7 bg-[#286dd7] border border-[#24252b]'
-                  : 'w-2.5 bg-slate-300 hover:bg-slate-500'
-              }`}
-              title={index === 0 ? 'Cover Page' : `Page ${index}`}
-            />
-          ))}
+              type="button"
+              onClick={() => onOrderBook(book, 'pdf')}
+              className="neo-btn bg-[#286dd7] text-white py-1 px-2 text-[10px] sm:text-[11px] font-black flex items-center gap-1 cursor-pointer"
+            >
+              <ShoppingBag className="w-3 h-3" />
+              <span>PDF ₹{book.pdfPrice}</span>
+            </button>
+            <button
+              type="button"
+              onClick={() => onOrderBook(book, 'hardcover')}
+              className="neo-btn bg-[#f9d54a] text-[#24252b] py-1 px-2 text-[10px] sm:text-[11px] font-black flex items-center gap-1 cursor-pointer"
+            >
+              <ShoppingBag className="w-3 h-3 text-amber-800" />
+              <span>Hardcover ₹{book.printPrice}</span>
+            </button>
+            <a
+              href={book.amazonUrl || "https://www.amazon.in/storefront?me=A3TSASKOI3KWD9&ref_=ssf_share"}
+              target="_blank"
+              rel="noreferrer"
+              className="neo-btn bg-[#ff9900] text-[#131921] py-1 px-2 text-[10px] sm:text-[11px] font-black flex items-center gap-1 cursor-pointer hover:bg-[#ffad33]"
+            >
+              <ExternalLink className="w-3 h-3" />
+              <span>Amazon 🛍️</span>
+            </a>
+          </div>
         </div>
 
-        <button
-          onClick={goToNext}
-          disabled={currentPageIndex === totalPages || isFlipping}
-          className="neo-btn bg-[#f9d54a] disabled:opacity-40 text-[#24252b] py-2 px-3 text-xs font-black flex items-center gap-1 cursor-pointer"
-        >
-          <span>Flip Next</span>
-          <ChevronRight className="w-4 h-4" />
-        </button>
+        {/* Flip Controls & Dots Indicator */}
+        <div className="bg-white border-2 border-[#24252b] rounded-xl px-3 py-1.5 shadow-[3px_3px_0_#24252b] flex items-center justify-between">
+          <button
+            onClick={goToPrev}
+            disabled={currentPageIndex === 0 || isFlipping}
+            className="neo-btn bg-slate-100 disabled:opacity-30 text-[#24252b] py-1 px-2.5 text-[11px] font-black flex items-center gap-1 cursor-pointer"
+          >
+            <ChevronLeft className="w-3.5 h-3.5" />
+            <span>Prev</span>
+          </button>
+
+          {/* Dots Indicator */}
+          <div className="flex items-center gap-1.5 px-2">
+            {Array.from({ length: maxSlideIndex + 1 }).map((_, index) => (
+              <button
+                key={index}
+                onClick={() => {
+                  if (!isFlipping) {
+                    setIsFlipping(true);
+                    setFlipDirection(index > currentPageIndex ? 'next' : 'prev');
+                    setTimeout(() => {
+                      setCurrentPageIndex(index);
+                      setIsFlipping(false);
+                    }, 250);
+                  }
+                }}
+                className={`h-2 rounded-full transition-all cursor-pointer ${
+                  currentPageIndex === index
+                    ? 'w-5 bg-[#286dd7] border border-[#24252b]'
+                    : 'w-2 bg-slate-300 hover:bg-slate-500'
+                }`}
+                title={index === 0 ? 'Cover' : index === maxSlideIndex ? 'Order Book' : `Sample Page ${index}`}
+              />
+            ))}
+          </div>
+
+          <button
+            onClick={goToNext}
+            disabled={currentPageIndex === maxSlideIndex || isFlipping}
+            className="neo-btn bg-[#f9d54a] disabled:opacity-30 text-[#24252b] py-1 px-2.5 text-[11px] font-black flex items-center gap-1 cursor-pointer"
+          >
+            <span>Next</span>
+            <ChevronRight className="w-3.5 h-3.5" />
+          </button>
+        </div>
       </div>
     </div>
   );

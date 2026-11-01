@@ -1,3 +1,11 @@
+import maaDurgaCoverImg from '../assets/images/maa_durga_book_cover_1791651672410.jpg';
+import durgaNineFormsImg from '../assets/images/durga_nine_forms_page_1791651721778.jpg';
+import durgaPage1Img from '../assets/images/durga_page1_lion_1791655355848.jpg';
+import durgaPage2Img from '../assets/images/durga_page2_lion_big_1791655366306.jpg';
+import durgaPage3Img from '../assets/images/durga_page3_helps_me_1791655379186.jpg';
+import ganeshaCoverImg from '../assets/images/ganesha_book_cover_1791651690032.jpg';
+import diwaliCoverImg from '../assets/images/diwali_book_cover_1791651706102.jpg';
+
 export interface CultureBookPage {
   pageNumber: number;
   title: string;
@@ -46,8 +54,8 @@ export const CULTURE_BOOKS: CultureBook[] = [
     pdfOriginalPrice: 249,
     printPrice: 899,
     printOriginalPrice: 1299,
-    coverImage: '/src/assets/images/maa_durga_book_cover_1791651672410.jpg',
-    spreadImage: '/src/assets/images/durga_nine_forms_page_1791651721778.jpg',
+    coverImage: maaDurgaCoverImg,
+    spreadImage: durgaNineFormsImg,
     isAvailableNow: true,
     totalPages: 10,
     pages: [
@@ -56,7 +64,7 @@ export const CULTURE_BOOKS: CultureBook[] = [
         title: 'My Maa Durga',
         theme: 'Love & Kindness',
         illustrationType: 'maa_lion',
-        pageImage: '/src/assets/images/durga_page1_lion_1791655355848.jpg',
+        pageImage: durgaPage1Img,
         lines: [
           { text: 'This is Maa Durga.' },
           { text: 'She is ', highlightWord: 'kind.' },
@@ -71,7 +79,7 @@ export const CULTURE_BOOKS: CultureBook[] = [
         title: 'Maa Has a Lion',
         theme: 'Strength & Protection',
         illustrationType: 'lion_close',
-        pageImage: '/src/assets/images/durga_page2_lion_big_1791655366306.jpg',
+        pageImage: durgaPage2Img,
         lines: [
           { text: 'This is a ', highlightWord: 'lion.' },
           { text: 'The lion is ', highlightWord: 'big.' },
@@ -86,7 +94,7 @@ export const CULTURE_BOOKS: CultureBook[] = [
         title: 'Maa Helps Me',
         theme: 'Caring & Safety',
         illustrationType: 'maa_girl',
-        pageImage: '/src/assets/images/durga_page3_helps_me_1791655379186.jpg',
+        pageImage: durgaPage3Img,
         lines: [
           { text: 'Maa can ', highlightWord: 'help.' },
           { text: 'Maa can ', highlightWord: 'care.' },
@@ -101,7 +109,7 @@ export const CULTURE_BOOKS: CultureBook[] = [
         title: 'Nine Forms of Maa Durga',
         theme: 'Navadurga for Early Learners',
         illustrationType: 'nine_forms',
-        pageImage: '/src/assets/images/durga_nine_forms_page_1791651721778.jpg',
+        pageImage: durgaNineFormsImg,
         lines: [
           { text: '1. Shailputri: She sits on a ', highlightWord: 'bull.' },
           { text: '2. Brahmacharini: She has a ', highlightWord: 'mala.' },
@@ -120,6 +128,7 @@ export const CULTURE_BOOKS: CultureBook[] = [
         title: 'Maa Blesses Me',
         theme: 'Inner Courage',
         illustrationType: 'blessing',
+        pageImage: durgaPage3Img,
         lines: [
           { text: 'Maa gives her blessings.' },
           { text: 'Maa makes me ', highlightWord: 'brave.' },
@@ -133,6 +142,7 @@ export const CULTURE_BOOKS: CultureBook[] = [
         title: 'Maa Gives Me Love',
         theme: 'Warmth & Security',
         illustrationType: 'hug',
+        pageImage: durgaPage1Img,
         lines: [
           { text: 'Maa gives me ', highlightWord: 'love.' },
           { text: 'Maa gives me ', highlightWord: 'care.' },
@@ -146,6 +156,7 @@ export const CULTURE_BOOKS: CultureBook[] = [
         title: 'Maa Helps Everyone',
         theme: 'Universal Empathy',
         illustrationType: 'animals',
+        pageImage: durgaPage2Img,
         lines: [
           { text: 'Maa helps ', highlightWord: 'all.' },
           { text: 'She helps ', highlightWord: 'people.' },
@@ -160,6 +171,7 @@ export const CULTURE_BOOKS: CultureBook[] = [
         title: 'Maa Cares for Nature',
         theme: 'Eco-consciousness',
         illustrationType: 'nature',
+        pageImage: durgaPage1Img,
         lines: [
           { text: 'Maa loves ', highlightWord: 'trees.' },
           { text: 'She loves ', highlightWord: 'birds.' },
@@ -174,6 +186,7 @@ export const CULTURE_BOOKS: CultureBook[] = [
         title: 'Maa Teaches Me Good Habits',
         theme: 'Values & Character',
         illustrationType: 'puja',
+        pageImage: durgaPage3Img,
         lines: [
           { text: 'Maa teaches me to be ', highlightWord: 'kind.' },
           { text: 'Maa teaches me to be ', highlightWord: 'honest.' },
@@ -188,6 +201,7 @@ export const CULTURE_BOOKS: CultureBook[] = [
         title: 'I Love My Maa',
         theme: 'Gratitude & Devotion',
         illustrationType: 'thanks',
+        pageImage: maaDurgaCoverImg,
         lines: [
           { text: 'I love my Maa.' },
           { text: 'She is ', highlightWord: 'strong.' },
@@ -216,7 +230,7 @@ export const CULTURE_BOOKS: CultureBook[] = [
     pdfOriginalPrice: 249,
     printPrice: 899,
     printOriginalPrice: 1299,
-    coverImage: '/src/assets/images/ganesha_book_cover_1791651690032.jpg',
+    coverImage: ganeshaCoverImg,
     isAvailableNow: false,
     totalPages: 10,
     pages: []
@@ -236,7 +250,7 @@ export const CULTURE_BOOKS: CultureBook[] = [
     pdfOriginalPrice: 249,
     printPrice: 899,
     printOriginalPrice: 1299,
-    coverImage: '/src/assets/images/diwali_book_cover_1791651706102.jpg',
+    coverImage: diwaliCoverImg,
     isAvailableNow: false,
     totalPages: 10,
     pages: []

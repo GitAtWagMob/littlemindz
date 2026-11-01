@@ -36,8 +36,28 @@ export const CultureBookReader: React.FC<CultureBookReaderProps> = ({
   const [isReadingAloud, setIsReadingAloud] = useState<boolean>(false);
   const [activeSpeechWord, setActiveSpeechWord] = useState<string>('');
   const [isFullscreen, setIsFullscreen] = useState<boolean>(false);
+  const [imageLoadErrors, setImageLoadErrors] = useState<Record<number, boolean>>({});
 
   const totalPages = (book.pages?.length || 0); // 10 pages
+
+  // Preload all book illustrations for instant, smooth page turns
+  useEffect(() => {
+    if (isOpen && book) {
+      const imagesToPreload: string[] = [book.coverImage];
+      if (book.spreadImage) imagesToPreload.push(book.spreadImage);
+      if (book.pages) {
+        book.pages.forEach(p => {
+          if (p.pageImage) imagesToPreload.push(p.pageImage);
+        });
+      }
+      imagesToPreload.forEach(src => {
+        if (src) {
+          const img = new Image();
+          img.src = src;
+        }
+      });
+    }
+  }, [isOpen, book]);
 
   // Touch Swipe tracking
   const touchStartX = useRef<number | null>(null);
@@ -184,10 +204,10 @@ export const CultureBookReader: React.FC<CultureBookReaderProps> = ({
     <div
       role="dialog"
       aria-modal="true"
-      className="fixed inset-0 z-50 bg-black/90 backdrop-blur-md flex flex-col items-center justify-between p-2 sm:p-4 overflow-y-auto"
+      className="fixed inset-0 z-50 bg-black/90 backdrop-blur-md flex flex-col items-center justify-between p-2 sm:p-4 overflow-y-auto pb-12 sm:pb-4"
     >
       {/* Top Header Controls */}
-      <div className="w-full max-w-4xl bg-[#f9d54a] border-3 border-[#24252b] rounded-xl px-4 py-2.5 shadow-[4px_4px_0_#24252b] flex items-center justify-between shrink-0 mb-3">
+      <div className="w-full max-w-4xl bg-[#f9d54a] border-3 border-[#24252b] rounded-xl px-4 py-2.5 shadow-[4px_4px_0_#24252b] flex items-center justify-between shrink-0 mb-2 sm:mb-3">
         <div className="flex items-center gap-2.5">
           <span className="w-9 h-9 rounded-full bg-white border-2 border-[#24252b] flex items-center justify-center shadow-xs">
             <BookOpen className="w-5 h-5 text-[#286dd7]" />
@@ -206,7 +226,7 @@ export const CultureBookReader: React.FC<CultureBookReaderProps> = ({
           {/* Read Aloud Button */}
           <button
             onClick={handleToggleReadAloud}
-            className={`neo-btn py-1.5 px-3 text-xs font-black flex items-center gap-1.5 transition-colors ${
+            className={`neo-btn py-1.5 px-3 text-xs font-black flex items-center gap-1.5 transition-colors cursor-pointer ${
               isReadingAloud ? 'bg-rose-500 text-white animate-pulse' : 'bg-white text-[#24252b]'
             }`}
             title="Read aloud with audio"
@@ -218,7 +238,7 @@ export const CultureBookReader: React.FC<CultureBookReaderProps> = ({
           {/* Fullscreen Toggle */}
           <button
             onClick={() => setIsFullscreen(!isFullscreen)}
-            className="neo-btn bg-white text-[#24252b] p-1.5 hidden sm:flex items-center justify-center"
+            className="neo-btn bg-white text-[#24252b] p-1.5 hidden sm:flex items-center justify-center cursor-pointer"
             title={isFullscreen ? 'Exit Fullscreen' : 'Fullscreen'}
           >
             {isFullscreen ? <Minimize2 className="w-4 h-4" /> : <Maximize2 className="w-4 h-4" />}
@@ -227,7 +247,7 @@ export const CultureBookReader: React.FC<CultureBookReaderProps> = ({
           {/* Close */}
           <button
             onClick={onClose}
-            className="neo-btn bg-white text-[#24252b] p-1.5"
+            className="neo-btn bg-white text-[#24252b] p-1.5 cursor-pointer"
             title="Close Book"
           >
             <X className="w-5 h-5" />
@@ -246,7 +266,7 @@ export const CultureBookReader: React.FC<CultureBookReaderProps> = ({
       >
         {/* The Realistic Book Structure */}
         <div
-          className={`relative w-full max-w-2xl sm:max-w-3xl aspect-[1/1.4] sm:aspect-[1.5/1] bg-white rounded-2xl border-4 border-[#24252b] book-shadow overflow-hidden flex flex-col sm:flex-row transition-all duration-300 ${
+          className={`relative w-full max-w-2xl sm:max-w-3xl min-h-[460px] sm:min-h-0 sm:aspect-[1.5/1] bg-white rounded-2xl border-4 border-[#24252b] book-shadow overflow-hidden flex flex-col sm:flex-row transition-all duration-300 ${
             isFlipping
               ? flipDirection === 'next'
                 ? 'scale-[0.98] -rotate-1'
@@ -259,12 +279,33 @@ export const CultureBookReader: React.FC<CultureBookReaderProps> = ({
 
           {/* Left Spread (Illustration / Cover on Desktop) */}
           <div className="w-full sm:w-1/2 h-1/2 sm:h-full relative overflow-hidden bg-amber-50 border-b-2 sm:border-b-0 sm:border-r-2 border-[#24252b]">
-            <img
-              src={pageImageSrc}
-              alt={isCover ? `${book.title} Cover` : currentPage?.title || 'Book Page Illustration'}
-              referrerPolicy="no-referrer"
-              className="w-full h-full object-cover select-none"
-            />
+            {!imageLoadErrors[currentPageIndex] ? (
+              <img
+                src={pageImageSrc}
+                alt={isCover ? `${book.title} Cover` : currentPage?.title || 'Book Page Illustration'}
+                referrerPolicy="no-referrer"
+                loading="eager"
+                onError={() => {
+                  setImageLoadErrors(prev => ({ ...prev, [currentPageIndex]: true }));
+                }}
+                className="w-full h-full object-cover select-none"
+              />
+            ) : (
+              <div className="w-full h-full flex flex-col items-center justify-center p-6 bg-gradient-to-br from-amber-100 via-orange-50 to-yellow-100 text-center select-none">
+                <div className="w-14 h-14 rounded-full bg-[#f9d54a] border-3 border-[#24252b] shadow-[3px_3px_0_#24252b] flex items-center justify-center mb-2">
+                  <Sparkles className="w-7 h-7 text-amber-800" />
+                </div>
+                <span className="text-[11px] font-black uppercase tracking-wider text-amber-800">
+                  {isCover ? book.title : `Page ${currentPageIndex} · ${currentPage?.theme || 'Early Reader Story'}`}
+                </span>
+                <h4 className="text-lg sm:text-xl font-black text-[#24252b] mt-1 mb-1">
+                  {isCover ? 'Loving Stories for Young Hearts' : currentPage?.title}
+                </h4>
+                <div className="text-[11px] font-bold text-amber-900 bg-white/90 border border-amber-300 rounded-lg px-2.5 py-1 shadow-xs mt-1">
+                  🌸 Early Reader Phonics Lesson
+                </div>
+              </div>
+            )}
 
             {/* Realistic Page Corner Curl on Cover/Pages */}
             <div className="absolute top-0 right-0 w-8 h-8 bg-gradient-to-bl from-black/25 via-white/50 to-transparent pointer-events-none" />
@@ -407,9 +448,9 @@ export const CultureBookReader: React.FC<CultureBookReaderProps> = ({
             disabled={currentPageIndex === 0 || isFlipping}
             onClick={goToPrev}
             aria-label="Previous Page"
-            className="absolute left-2 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white text-[#24252b] border-2 border-[#24252b] shadow-[2px_2px_0_#24252b] flex items-center justify-center hover:bg-[#f9d54a] disabled:opacity-0 disabled:pointer-events-none transition-all z-40 active:scale-95"
+            className="absolute left-2 top-[24%] sm:top-1/2 -translate-y-1/2 w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-white/95 text-[#24252b] border-2 border-[#24252b] shadow-[2px_2px_0_#24252b] flex items-center justify-center hover:bg-[#f9d54a] disabled:opacity-0 disabled:pointer-events-none transition-all z-40 active:scale-95 cursor-pointer"
           >
-            <ChevronLeft className="w-6 h-6" />
+            <ChevronLeft className="w-5 h-5 sm:w-6 sm:h-6" />
           </button>
 
           {/* Right Arrow Click Hotspot */}
@@ -418,26 +459,26 @@ export const CultureBookReader: React.FC<CultureBookReaderProps> = ({
             disabled={currentPageIndex === totalPages || isFlipping}
             onClick={goToNext}
             aria-label="Next Page"
-            className="absolute right-2 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white text-[#24252b] border-2 border-[#24252b] shadow-[2px_2px_0_#24252b] flex items-center justify-center hover:bg-[#f9d54a] disabled:opacity-0 disabled:pointer-events-none transition-all z-40 active:scale-95"
+            className="absolute right-2 top-[24%] sm:top-1/2 -translate-y-1/2 w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-white/95 text-[#24252b] border-2 border-[#24252b] shadow-[2px_2px_0_#24252b] flex items-center justify-center hover:bg-[#f9d54a] disabled:opacity-0 disabled:pointer-events-none transition-all z-40 active:scale-95 cursor-pointer"
           >
-            <ChevronRight className="w-6 h-6" />
+            <ChevronRight className="w-5 h-5 sm:w-6 sm:h-6" />
           </button>
         </div>
       </div>
 
       {/* Reader Bottom Bar: Page Slider & Controls */}
-      <div className="w-full max-w-4xl bg-white border-3 border-[#24252b] rounded-xl px-4 py-3 shadow-[4px_4px_0_#24252b] flex items-center justify-between shrink-0 mt-3">
+      <div className="w-full max-w-4xl bg-white border-3 border-[#24252b] rounded-xl px-3 sm:px-4 py-2.5 sm:py-3 shadow-[4px_4px_0_#24252b] flex items-center justify-between shrink-0 mt-2 sm:mt-3 mb-2 sm:mb-0">
         <button
           onClick={goToPrev}
           disabled={currentPageIndex === 0 || isFlipping}
-          className="neo-btn bg-slate-100 disabled:opacity-40 text-[#24252b] py-2 px-3 text-xs font-black flex items-center gap-1"
+          className="neo-btn bg-slate-100 disabled:opacity-40 text-[#24252b] py-2 px-3 text-xs font-black flex items-center gap-1 cursor-pointer"
         >
           <ChevronLeft className="w-4 h-4" />
           <span>Flip Back</span>
         </button>
 
         {/* Progress Dots with Page Tooltip */}
-        <div className="flex items-center gap-1.5 overflow-x-auto px-2 max-w-[200px] sm:max-w-md">
+        <div className="flex items-center gap-1.5 overflow-x-auto px-2 max-w-[180px] sm:max-w-md">
           {Array.from({ length: totalPages + 1 }).map((_, index) => (
             <button
               key={index}
@@ -451,7 +492,7 @@ export const CultureBookReader: React.FC<CultureBookReaderProps> = ({
                   }, 400);
                 }
               }}
-              className={`h-2.5 rounded-full transition-all ${
+              className={`h-2.5 rounded-full transition-all cursor-pointer ${
                 currentPageIndex === index
                   ? 'w-7 bg-[#286dd7] border border-[#24252b]'
                   : 'w-2.5 bg-slate-300 hover:bg-slate-500'
@@ -464,7 +505,7 @@ export const CultureBookReader: React.FC<CultureBookReaderProps> = ({
         <button
           onClick={goToNext}
           disabled={currentPageIndex === totalPages || isFlipping}
-          className="neo-btn bg-[#f9d54a] disabled:opacity-40 text-[#24252b] py-2 px-3 text-xs font-black flex items-center gap-1"
+          className="neo-btn bg-[#f9d54a] disabled:opacity-40 text-[#24252b] py-2 px-3 text-xs font-black flex items-center gap-1 cursor-pointer"
         >
           <span>Flip Next</span>
           <ChevronRight className="w-4 h-4" />
